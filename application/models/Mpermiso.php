@@ -10,7 +10,24 @@ class Mpermiso extends Model
         parent::__construct($datos);
     }
 
-    public function consultarModulos()
+    public function consultarModulosPrincipales()
+    {
+        try {
+            $query = $this->db->select("m.nombre, m.etiqueta, m.controlador, m.icono, m.idmodulo")
+                ->from($this->tabla . " p")
+                ->join("modulo m", "m.idmodulo = p.modulo_idmodulo", "inner")
+                ->where("p.perfil_idperfil", $this->session->userdata('idperfil'))
+                ->where('m.cod_padre', 0)
+                ->where('m.estado', 'activo')
+                ->order_by('m.orden', 'ASC')
+                ->get();
+            return $query->result();
+        } catch (\Throwable $th) {
+            return $th;
+        }
+    }
+
+    public function consultarModulosSecundarios($cod_padre)
     {
         try {
             $query = $this->db->select("m.nombre, m.etiqueta, m.controlador, m.icono")
@@ -18,6 +35,8 @@ class Mpermiso extends Model
                 ->join("modulo m", "m.idmodulo = p.modulo_idmodulo", "inner")
                 ->where("p.perfil_idperfil", $this->session->userdata('idperfil'))
                 ->where('m.estado', 'activo')
+                ->where('m.cod_padre', $cod_padre)
+                ->order_by('m.orden', 'ASC')
                 ->get();
             return $query->result();
         } catch (\Throwable $th) {

@@ -20,7 +20,7 @@ class Cprograma extends CI_Controller
 
 		$data = array();
         // Nombre de la Página actual
-		$data['modulo'] = 'modulo_programa';
+		$data['modulo'] = 'modulo_lista_programas';
         $data['name'] = 'PROGRAMAS';
         // data de la empresa
 		$data['empresa'] = 'PROJECT MANAGER';

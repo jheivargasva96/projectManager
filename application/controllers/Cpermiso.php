@@ -10,10 +10,17 @@ class Cpermiso extends CI_Controller
         $this->load->model('Mpermiso');
     }
 
-    public function Consultar()
+    public function consultarModulosPrincipales()
     {
         if ($this->input->is_ajax_request()) {
-            echo json_encode($this->Mpermiso->consultarModulos());
+            echo json_encode($this->Mpermiso->consultarModulosPrincipales());
+        }
+    }
+
+    public function consultarModulosSecundarios()
+    {
+        if ($this->input->is_ajax_request()) {
+            echo json_encode($this->Mpermiso->consultarModulosSecundarios($_POST['cod_padre']));
         }
     }
 }
