@@ -1,9 +1,9 @@
-table = 'proyecto';
-controlador = 'Cproyecto';
-fields = ['nombre', 'descripcion', 'responsable','programa_idprograma', 'fecha_inicio','fecha_fin', 'estado'];
+table = 'indicador';
+controlador = 'Cindicador';
+fields = ['nombre', 'descripcion','responsable', 'proyecto_idproyecto', 'estado'];
 inactiveFields = [];
 action = true;
-title = 'Actualizar Proyecto';
+title = 'Actualizar indicador';
 button = 'Editar'
 
 alertify.set('notifier', 'position', 'top-right');
@@ -57,71 +57,10 @@ var DataTable = $('#dataTable').DataTable({
 
 dataLoad();
 
-$("#create").click(function () {
-    $("#Modal .modal-content").load(base_url() + controlador + '/Modal', function () {
-        $("#Modal").modal({
-            backdrop: 'static',
-            keyboard: true,
-            show: true
-        });
-
-        loadUsers();
-        loadPro();
-
-        $("form").on('submit', function (e) {
-            e.preventDefault();
-            sendData();
-        });
-    });
-});
-
-//nuevo
-$("#inscription").click(function () {
-    $("#Modal .modal-content").load(base_url() + controlador + '/Modal', function () {
-        $("#Modal").modal({
-            backdrop: 'static',
-            keyboard: true,
-            show: true
-        });
-
-        loadUsers();
-        loadPro();
-
-        $("form").on('submit', function (e) {
-            e.preventDefault();
-            sendData();
-        });
-    });
-});
-
-function sendData() {
-    $.ajax({
-        url: base_url() + controlador + '/guardar',
-        type: "POST",
-        data: $("#form").serialize(),
-        success: function (resultado) {
-            var data = JSON.parse(resultado);
-
-            if (data.success == true) {
-                alertify.success("Guardado!");
-                $('#Modal').modal('toggle');
-                dataLoad();
-            } else {
-                alertify.error('¡Error!, No se ha podido realizar la acción, comuniquese con el adminsitrador del sistema.');
-                dataLoad();
-                return false;
-            }
-        },
-        error: function (error) {
-            alertify.error('Ocurrio un Error');
-            return false;
-        }
-    });
-}
 
 function dataLoad() {
     $.ajax({
-        url: base_url() + controlador + "/consultarTodos",
+        url: base_url() + controlador + "/consultarMisIndicadores",
         type: "POST",
         success: function (resultado) {
 
@@ -145,16 +84,15 @@ function dataLoad() {
                         }
                     }
 
-                    edit = '<button class="editData btn btn-info btn-xs" title="Editar"><span class="fas fa-sm fa-edit"></span></button>';
-
+                   
                     var fila = {};
                     fila[0] = this['id' + table];
 
                     for (i = 0; i < fields.length; i++) {
                         if (fields[i] == 'responsable') {
                             fila[i + 1] = consultarResponsable(this[fields[i]]);
-                        } else if (fields[i] == 'programa_idprograma') {
-                            fila[i + 1] = consultarPrograma(this[fields[i]]);
+                        } else if (fields[i] == 'proyecto_idproyecto') {
+                            fila[i + 1] = consultarProyecto(this[fields[i]]);
                         }else{
                             fila[i + 1] = this[fields[i]];
                         }
@@ -162,7 +100,7 @@ function dataLoad() {
                     
 
                     if (action) {
-                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + edit + '</center>';
+                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + '</center>';
                     }
 
                     filas.push(fila);
@@ -179,7 +117,6 @@ function dataLoad() {
     });
 }
 
-
 function loadPro() {
     $.ajax({
         url: base_url() + controlador + "/consultarPro",
@@ -190,9 +127,9 @@ function loadPro() {
                 data = JSON.parse(resultado);
                 if (data.length > 0) {
                     $.each(data, function () {
-                        $('[name=programa_idprograma]').append($('<option />', {
+                        $('[name=proyecto_idproyecto]').append($('<option />', {
                             text: this.nombre,
-                            value: this.idprograma,
+                            value: this.idproyecto,
                         }));
                     });
                 }
@@ -255,12 +192,12 @@ function consultarResponsable(id) {
     return nombre;
 }
 
-function consultarPrograma(id) {
+function consultarProyecto(id) {
     nombrep = '';
     $.ajax({
         async: false,
         type: "POST",
-        url: base_url() + "Cprograma/consultar",
+        url: base_url() + "Cproyecto/consultar",
         data: {
             'id': id
         },
@@ -300,28 +237,6 @@ function saveState(state, id) {
     });
 }
 
-function editData(id) {
-    $("#Modal .modal-content").load(base_url() + controlador + '/Modal', function () {
-        $("#Modal").modal({
-            backdrop: 'static',
-            keyboard: true,
-            show: true
-        });
-
-        loadUsers();
-        loadPro();
-
-        $('#title').text(title);
-        $("#guardar").html(button);
-
-        consultar(id);
-
-        $("form").on('submit', function (e) {
-            e.preventDefault();
-            sendData();
-        });
-    });
-}
 
 function consultar(id) {
     $.ajax({
@@ -369,7 +284,7 @@ function consultaPro(id) {
                 data = JSON.parse(resultado);
                 for (var key in data) {
                     valor = data[key];
-                    if (key == 'programa') {
+                    if (key == 'proyecto') {
                         $('[name="' + key + '"] [value="' + valor + '"]').attr('selected', true);
                     } else {
                         $('[name="' + key + '"]').val(valor);

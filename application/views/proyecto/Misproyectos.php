@@ -4,7 +4,6 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <button id="create" class="btn bg-gradient-success btn-sm btn-social"><i class="fas fa-plus"></i> Nuevo proyecto</button>
                     </div>
                     <div class="card-body">
                         <table id="dataTable" class="table table-bordered table-striped">
@@ -13,7 +12,6 @@
                                     <th>ID</th>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
-                                    <th>Responsable</th>
                                     <th>Programa</th>
                                     <th>Fecha Inicio</th>
                                     <th>Fecha Fin</th>

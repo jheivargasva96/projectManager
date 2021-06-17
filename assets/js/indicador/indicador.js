@@ -1,9 +1,9 @@
-table = 'proyecto';
-controlador = 'Cproyecto';
-fields = ['nombre', 'descripcion', 'responsable','programa_idprograma', 'fecha_inicio','fecha_fin', 'estado'];
+table = 'indicador';
+controlador = 'Cindicador';
+fields = ['nombre', 'descripcion', 'responsable', 'proyecto_idproyecto','estado'];
 inactiveFields = [];
 action = true;
-title = 'Actualizar Proyecto';
+title = 'Actualizar indicador';
 button = 'Editar'
 
 alertify.set('notifier', 'position', 'top-right');
@@ -65,27 +65,8 @@ $("#create").click(function () {
             show: true
         });
 
-        loadUsers();
         loadPro();
-
-        $("form").on('submit', function (e) {
-            e.preventDefault();
-            sendData();
-        });
-    });
-});
-
-//nuevo
-$("#inscription").click(function () {
-    $("#Modal .modal-content").load(base_url() + controlador + '/Modal', function () {
-        $("#Modal").modal({
-            backdrop: 'static',
-            keyboard: true,
-            show: true
-        });
-
         loadUsers();
-        loadPro();
 
         $("form").on('submit', function (e) {
             e.preventDefault();
@@ -153,13 +134,12 @@ function dataLoad() {
                     for (i = 0; i < fields.length; i++) {
                         if (fields[i] == 'responsable') {
                             fila[i + 1] = consultarResponsable(this[fields[i]]);
-                        } else if (fields[i] == 'programa_idprograma') {
-                            fila[i + 1] = consultarPrograma(this[fields[i]]);
-                        }else{
+                        } else if (fields[i] == 'proyecto_idproyecto') {
+                            fila[i + 1] = consultarProyecto(this[fields[i]]);
+                        }else {
                             fila[i + 1] = this[fields[i]];
                         }
                     }
-                    
 
                     if (action) {
                         fila[fields.length + 1] = '<center>' + stateEdit + ' ' + edit + '</center>';
@@ -179,7 +159,6 @@ function dataLoad() {
     });
 }
 
-
 function loadPro() {
     $.ajax({
         url: base_url() + controlador + "/consultarPro",
@@ -190,9 +169,9 @@ function loadPro() {
                 data = JSON.parse(resultado);
                 if (data.length > 0) {
                     $.each(data, function () {
-                        $('[name=programa_idprograma]').append($('<option />', {
+                        $('[name=proyecto_idproyecto]').append($('<option />', {
                             text: this.nombre,
-                            value: this.idprograma,
+                            value: this.idproyecto,
                         }));
                     });
                 }
@@ -234,6 +213,25 @@ function loadUsers() {
     });
 }
 
+function consultarProyecto(id) {
+    nombrep = '';
+    $.ajax({
+        async: false,
+        type: "POST",
+        url: base_url() + "Cproyecto/consultar",
+        data: {
+            'id': id
+        },
+        success: function (resultado) {
+            data = JSON.parse(resultado);
+            nombrep = data.nombre;
+        },
+        error: function (error) {
+            alertify.alert('Error', error.responseText);
+        }
+    });
+    return nombrep;
+}
 
 function consultarResponsable(id) {
     nombre = '';
@@ -253,26 +251,6 @@ function consultarResponsable(id) {
         }
     });
     return nombre;
-}
-
-function consultarPrograma(id) {
-    nombrep = '';
-    $.ajax({
-        async: false,
-        type: "POST",
-        url: base_url() + "Cprograma/consultar",
-        data: {
-            'id': id
-        },
-        success: function (resultado) {
-            data = JSON.parse(resultado);
-            nombrep = data.nombre;
-        },
-        error: function (error) {
-            alertify.alert('Error', error.responseText);
-        }
-    });
-    return nombrep;
 }
 
 function saveState(state, id) {
@@ -309,7 +287,6 @@ function editData(id) {
         });
 
         loadUsers();
-        loadPro();
 
         $('#title').text(title);
         $("#guardar").html(button);
@@ -354,7 +331,6 @@ function consultar(id) {
             alertify.alert('Error', error.responseText);
         }
     });
-
 }
 
 function consultaPro(id) {
@@ -369,7 +345,7 @@ function consultaPro(id) {
                 data = JSON.parse(resultado);
                 for (var key in data) {
                     valor = data[key];
-                    if (key == 'programa') {
+                    if (key == 'proyecto') {
                         $('[name="' + key + '"] [value="' + valor + '"]').attr('selected', true);
                     } else {
                         $('[name="' + key + '"]').val(valor);
@@ -388,4 +364,5 @@ function consultaPro(id) {
             alertify.alert('Error', error.responseText);
         }
     });
+
 }
