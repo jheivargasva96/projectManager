@@ -2,15 +2,17 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Cproyecto extends CI_Controller
+class Cactividad extends CI_Controller
 {
     public function __construct()
 	{
 		parent::__construct();
 		//Modelos Usados
-		$this->load->model('Mproyecto');
-        $this->load->model('Musuario');
-		$this->load->model('Mprograma');
+		$this->load->model('Musuario');
+		$this->load->model('Mindicador');
+		$this->load->model('Mactividad');
+    
+		
 	}
 
     public function index()
@@ -21,14 +23,14 @@ class Cproyecto extends CI_Controller
 
 		$data = array();
         // Nombre de la Página actual
-		$data['modulo'] = 'modulo_proyecto';
-        $data['name'] = 'Proyectos';
+		$data['modulo'] = 'modulo_mis_actividades';
+        $data['name'] = 'Actividades';
         // data de la empresa
 		$data['empresa'] = 'PROJECT MANAGER';
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
-		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cproyecto">Proyectos</a></li>';
+		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cactividad">Actividades</a></li>';
 
 		$data['css'] = array(
             'js/alertifyjs/css/alertify.rtl.css',
@@ -56,14 +58,14 @@ class Cproyecto extends CI_Controller
 			'datatables-buttons/js/buttons.html5.min.js',
 			'datatables-buttons/js/buttons.print.min.js',
 			'datatables-buttons/js/buttons.colVis.min.js',
-			'js/proyecto/proyecto.js'
+			'js/actividad/actividad.js'
         );
 
 		$this->load->view('pages/head', $data);
 		$this->load->view('pages/header');
 		$this->load->view('pages/menu');
 		$this->load->view('pages/wrapper');
-		$this->load->view('proyecto/proyecto');
+		$this->load->view('actividad/actividad');
 		$this->load->view('pages/footer');
 		$this->load->view('pages/script');
     }
@@ -76,8 +78,8 @@ class Cproyecto extends CI_Controller
 
 		$data = array();
         // Nombre de la Página actual
-		$data['modulo'] = 'modulo_proyecto';
-        $data['name'] = 'Proyectos';
+		$data['modulo'] = 'modulo_lista_actividades';
+        $data['name'] = 'actividad';
         // data de la empresa
 		$data['empresa'] = 'PROJECT MANAGER';
 		$data['logo'] = 'assets/img/icono.jpg';
@@ -111,14 +113,14 @@ class Cproyecto extends CI_Controller
 			'datatables-buttons/js/buttons.html5.min.js',
 			'datatables-buttons/js/buttons.print.min.js',
 			'datatables-buttons/js/buttons.colVis.min.js',
-			'js/proyecto/Misproyectos.js'
+			'js/actividad/Mactividades.js'
         );
 
 		$this->load->view('pages/head', $data);
 		$this->load->view('pages/header');
 		$this->load->view('pages/menu');
 		$this->load->view('pages/wrapper');
-		$this->load->view('proyecto/Misproyectos');
+		$this->load->view('actividad/Mactividades');
 		$this->load->view('pages/footer');
 		$this->load->view('pages/script');
     }
@@ -126,15 +128,7 @@ class Cproyecto extends CI_Controller
     public function consultarTodos()
 	{
 		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mproyecto->consultarTodos());
-		}
-	}
-	
-	public function consultarMisProyectos()
-	{
-		$id = $this->session->userdata('idusuario');
-		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mproyecto->consultarMis($id));
+			echo json_encode($this->Mactividad->consultarTodos());
 		}
 	}
 
@@ -145,50 +139,56 @@ class Cproyecto extends CI_Controller
 		}
 	}
 
-	public function consultarPro()
+	public function consultarIndicador()
 	{
 		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mprograma->consultarActivos());
+			echo json_encode($this->Mindicador->consultarActivos());
 		}
 	}
-	
+
+	public function consultarMisIndicadores()
+	{
+		$id = $this->session->userdata('idusuario');
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mactividad->consultarMis($id));
+		}
+	}
 
     public function Modal()
 	{
-		$this->load->view('proyecto/ModalProyecto');
+		$this->load->view('actividad/Modalactividad');
 	}
-
 
     public function Estado()
 	{
 		$id = $_POST['id'];
 		$estado = $_POST['estado'];
-		$this->Mproyecto->consultar($id);
-		$this->Mproyecto->set('estado', $estado);
+		$this->Mactividad->consultar($id);
+		$this->Mactividad->set('estado', $estado);
 		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mproyecto->guardar());
+			echo json_encode($this->Mactividad->guardar());
 		}
 
 	}
+
+	
 
     public function consultar()
 	{
 		$id  = $_POST['id'];
 		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mproyecto->consultar($id));
+			echo json_encode($this->Mactividad->consultar($id));
 		}
 	}
 
     public function guardar()
 	{
-		$id  = $_POST['idproyecto'];
-		unset($_POST['idproyecto']);
-		$proyecto = new $this->Mproyecto($_POST);
-		$proyecto->setId($id);
+		$id  = $_POST['idactividad'];
+		unset($_POST['idactividad']);
+		$indicador = new $this->Mactividad($_POST);
+		$indicador->setId($id);
 		if ($this->input->is_ajax_request()) {
-			echo json_encode($proyecto->guardar());
+			echo json_encode($indicador->guardar());
 		}
 	}
-
-	
 }
