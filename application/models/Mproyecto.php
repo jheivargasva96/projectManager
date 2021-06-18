@@ -9,4 +9,5 @@ class Mproyecto extends Model
         $this->tabla = 'proyecto';
         parent::__construct($datos);
     }
+    //comentario
 }
