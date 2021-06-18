@@ -92,7 +92,7 @@ function dataLoad() {
                         if (fields[i] == 'responsable') {
                             fila[i + 1] = consultarResponsable(this[fields[i]]);
                         } else if (fields[i] == 'proyecto_idproyecto') {
-                            fila[i + 1] = consultarProyecto(this[fields[i]]);
+                            fila[i + 1] = consultarProyecto(this[fields[i]]) ? consultarProyecto(this[fields[i]]) : '';
                         }else{
                             fila[i + 1] = this[fields[i]];
                         }
