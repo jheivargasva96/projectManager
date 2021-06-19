@@ -11,8 +11,7 @@ class Cactividad extends CI_Controller
 		$this->load->model('Musuario');
 		$this->load->model('Mindicador');
 		$this->load->model('Mactividad');
-    
-		
+		$this->load->model('Mparticipante');
 	}
 
     public function index()
@@ -85,7 +84,7 @@ class Cactividad extends CI_Controller
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
-		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cproyecto">Proyectos</a></li>';
+		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cactividad/filtro_responsable">Actividades</a></li>';
 
 		$data['css'] = array(
             'js/alertifyjs/css/alertify.rtl.css',
@@ -113,14 +112,69 @@ class Cactividad extends CI_Controller
 			'datatables-buttons/js/buttons.html5.min.js',
 			'datatables-buttons/js/buttons.print.min.js',
 			'datatables-buttons/js/buttons.colVis.min.js',
-			'js/actividad/Mactividades.js'
+			'js/actividad/Misactividades.js'
         );
 
 		$this->load->view('pages/head', $data);
 		$this->load->view('pages/header');
 		$this->load->view('pages/menu');
 		$this->load->view('pages/wrapper');
-		$this->load->view('actividad/Mactividades');
+		$this->load->view('actividad/Misactividades');
+		$this->load->view('pages/footer');
+		$this->load->view('pages/script');
+    }
+
+	public function inscribirse()
+    {
+        if (!$this->session->userdata('idusuario')) {
+			redirect('Cinicio');
+		}
+
+		$data = array();
+        // Nombre de la Página actual
+		$data['modulo'] = 'modulo_inscribir_actividades';
+        $data['name'] = 'Inscribirse';
+        // data de la empresa
+		$data['empresa'] = 'PROJECT MANAGER';
+		$data['logo'] = 'assets/img/icono.jpg';
+
+        // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
+		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cactividad/inscribirse">Actividades</a></li>';
+
+		$data['css'] = array(
+            'js/alertifyjs/css/alertify.rtl.css',
+			'js/alertifyjs/css/themes/default.rtl.css',
+			'datatables-bs4/css/dataTables.bootstrap4.min.css',
+			'datatables-responsive/css/responsive.bootstrap4.min.css',
+			'datatables-buttons/css/buttons.bootstrap4.min.css'
+        );
+
+        $data['js'] = array(
+            'bootstrap/js/bootstrap.bundle.min.js',
+            'overlayScrollbars/js/jquery.overlayScrollbars.min.js',
+            'js/adminlte.js',
+            'js/menu.js',
+            'js/alertifyjs/alertify.js',
+			'datatables/jquery.dataTables.min.js',
+			'datatables-bs4/js/dataTables.bootstrap4.min.js',
+			'datatables-responsive/js/dataTables.responsive.min.js',
+			'datatables-responsive/js/responsive.bootstrap4.min.js',
+			'datatables-buttons/js/dataTables.buttons.min.js',
+			'datatables-buttons/js/buttons.bootstrap4.min.js',
+			'jszip/jszip.min.js',
+			'pdfmake/pdfmake.min.js',
+			'pdfmake/vfs_fonts.js',
+			'datatables-buttons/js/buttons.html5.min.js',
+			'datatables-buttons/js/buttons.print.min.js',
+			'datatables-buttons/js/buttons.colVis.min.js',
+			'js/actividad/inscribirse.js'
+        );
+
+		$this->load->view('pages/head', $data);
+		$this->load->view('pages/header');
+		$this->load->view('pages/menu');
+		$this->load->view('pages/wrapper');
+		$this->load->view('actividad/Inscribirse');
 		$this->load->view('pages/footer');
 		$this->load->view('pages/script');
     }
@@ -151,6 +205,14 @@ class Cactividad extends CI_Controller
 		$id = $this->session->userdata('idusuario');
 		if ($this->input->is_ajax_request()) {
 			echo json_encode($this->Mactividad->consultarMis($id));
+		}
+	}
+
+	public function consultarParticipante()
+	{
+		$id = $this->session->userdata('idusuario');
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mactividad->consultarParticipante($id));
 		}
 	}
 
@@ -186,6 +248,18 @@ class Cactividad extends CI_Controller
 		$id  = $_POST['idactividad'];
 		unset($_POST['idactividad']);
 		$indicador = new $this->Mactividad($_POST);
+		$indicador->setId($id);
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($indicador->guardar());
+		}
+	}
+
+	public function guardarIncripcion()
+	{
+		$_POST['usuario_idusuario'] = $this->session->userdata('idusuario');
+		$id  = $_POST['idparticipante'];
+		unset($_POST['idparticipante']);
+		$indicador = new $this->Mparticipante($_POST);
 		$indicador->setId($id);
 		if ($this->input->is_ajax_request()) {
 			echo json_encode($indicador->guardar());

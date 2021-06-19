@@ -189,6 +189,4 @@ class Cproyecto extends CI_Controller
 			echo json_encode($proyecto->guardar());
 		}
 	}
-
-	
 }
