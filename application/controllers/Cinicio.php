@@ -35,7 +35,6 @@ class Cinicio extends CI_Controller
             'bootstrap/js/bootstrap.bundle.min.js',
             'overlayScrollbars/js/jquery.overlayScrollbars.min.js',
             'js/adminlte.js',
-            'js/menu.js',
             'js/alertifyjs/alertify.js'
         );
 

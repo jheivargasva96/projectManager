@@ -3,8 +3,8 @@ controlador = 'Cusuario';
 fields = ['identificacion', 'nombres', 'apellidos', 'correo', 'telefono', 'direccion', 'estado'];
 inactiveFields = [];
 action = true;
-button = 'Actualizar Usuario';
-title = 'Editar'
+title = 'Actualizar Usuario';
+button = 'Editar'
 
 alertify.set('notifier', 'position', 'top-right');
 

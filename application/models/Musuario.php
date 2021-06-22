@@ -36,4 +36,27 @@ class Musuario extends Model
             return $th;
         }
     }
+
+    public function getWithCorreo($email)
+    {
+        $data = array('success' => false, 'message' => 'Error inesperado!');
+        try {
+            $this->db->where('estado', 'activo');
+            $this->db->where('correo', $email);
+            $query = $this->db->get($this->tabla)->row();
+            if ($query) {
+                $data['success'] = true;
+                $data['message'] = 'Funcionario encontrado';
+                $data['info'] = $query;
+                $this->id = $query->idusuario;
+                $this->campos = (array) $query;
+            } else {
+                $data['message'] = 'El usuario no se ha encontrado';
+            }
+            return $data;
+        } catch (\Throwable $th) {
+            return $th;
+        }
+        
+    }
 }

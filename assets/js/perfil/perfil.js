@@ -52,6 +52,11 @@ var DataTable = $('#dataTable').DataTable({
             e.preventDefault();
             editData(data[0]);
         });
+
+        $(row).on("click", ".permit", function (e) {
+            e.preventDefault();
+            permitModal(data[0], data[1]);
+        });
     }
 });
 
@@ -71,6 +76,107 @@ $("#create").click(function () {
         });
     });
 });
+
+function permitModal(idperfil, nombre) {
+    $("#Modal .modal-content").load(base_url() + controlador + '/ModalPermisos', function () {
+        $("#Modal").modal({
+            backdrop: 'static',
+            keyboard: true,
+            show: true
+        });
+
+        $("#nombre_perfil").html(nombre);
+        $("#idperfil").val(idperfil);
+
+        modules = getModules();
+        if (modules.length > 0) {
+            var stringModules = '';
+            $.each(modules, function () {
+                stringModules += '<div class="row">';
+                if (this.cod_padre != 0) {
+                    stringModules += '<span class="col-md-2"></span>';
+                } else {
+                    stringModules += '<span class="col-md-1"></span>';
+                }
+                
+                stringModules += '<div class="form-group col-md-9 custom-control custom-switch custom-switch-off-danger custom-switch-on-success">';
+                stringModules += '<input type="checkbox" name="modulo[]" class="custom-control-input" id="customSwitch' + this.idmodulo + '" value="' + this.idmodulo + '">';
+                stringModules += '<label class="custom-control-label" for="customSwitch' + this.idmodulo + '">' + this.etiqueta + '</label>';
+                stringModules += '</div>';
+                stringModules += '</div>';
+            });
+            $("#form").append(stringModules);
+        }
+        bsCustomFileInput.init();
+
+        modulesPerfil = getModulesPerfil(idperfil);
+        if (modulesPerfil.length > 0) {
+            $.each(modulesPerfil, function () {
+                $("#customSwitch" + this.idmodulo).click();
+            });
+        }
+
+        $("form").on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: base_url() + controlador + '/guardarPermisos',
+                type: "POST",
+                data: $("#form").serialize(),
+                success: function (resultado) {
+                    var data = JSON.parse(resultado);        
+                    if (data.success == true) {
+                        alertify.success("Guardado!");
+                        $('#Modal').modal('toggle');
+                    } else {
+                        alertify.error('¡Error!, No se ha podido realizar la acción, comuniquese con el adminsitrador del sistema.');
+                        return false;
+                    }
+                },
+                error: function (error) {
+                    alertify.error('Ocurrio un Error');
+                    return false;
+                }
+            });
+        });
+    });
+}
+
+function getModules() {
+    var data = {};
+    $.ajax({
+        async: false,
+        url: base_url() + controlador + "/Modulos",
+        type: "POST",
+        success: function (resultado) {
+            data = JSON.parse(resultado);
+        },
+        error: function (error) {
+            return false;
+        }
+    });
+
+    return data;
+}
+
+function getModulesPerfil(idperfil) {
+    var data = {};
+    $.ajax({
+        async: false,
+        url: base_url() + controlador + "/ModulosPerfil",
+        type: "POST",
+        data: {
+            idperfil: idperfil
+        },
+        success: function (resultado) {
+            data = JSON.parse(resultado);
+        },
+        error: function (error) {
+            return false;
+        }
+    });
+
+    return data;
+}
 
 function sendData() {
     $.ajax({
@@ -124,6 +230,7 @@ function dataLoad() {
                     }
 
                     edit = '<button class="editData btn btn-info btn-xs" title="Editar"><span class="fas fa-sm fa-edit"></span></button>';
+                    permit = '<button class="permit btn btn-warning btn-xs" title="Permisos"><span class="fa fa-lock" ></span></button>';
 
                     var fila = {};
                     fila[0] = this['id' + table];
@@ -133,7 +240,7 @@ function dataLoad() {
                     }
 
                     if (action) {
-                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + edit + '</center>';
+                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + edit + ' ' + permit + '</center>';
                     }
 
                     filas.push(fila);
@@ -211,7 +318,7 @@ function consultar(id) {
                         $('[name="' + key + '"] [value="' + valor + '"]').attr('selected', true);
                     } else {
                         $('[name="' + key + '"]').val(valor);
-                    }                    
+                    }
                 }
 
                 for (i = 0; i < inactiveFields.length; i++) {

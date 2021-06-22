@@ -36,9 +36,20 @@
                         <div class="dropdown-item dropdown-footer">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <input type="submit" class="btn bg-gradient-primary btn-xs btn-flat" id="actualizar_password" value="Modificar Contraseña">
                                 </div>
-                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                    <input type="button" class="btn bg-gradient-primary btn-xs btn-flat" id="editar_perfil" value="Modificar" idusuario="<?= $this->session->userdata('idusuario') ?>">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <br>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <input type="button" class="btn bg-gradient-primary btn-xs btn-flat" id="actualizar_password" value="Modificar Contraseña">
+                                </div>
+                                <div class="col-md-4">
+                                </div>
                                 <div class="col-md-4">
                                     <a href="<?= base_url() ?>Clogin/Cerrar" class="btn bg-gradient-danger btn-xs btn-flat">Cerrar sesión</a>
                                 </div>
@@ -46,7 +57,7 @@
                         </div>
                     </div>
                 </li>
-                
+
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                         <i class="fas fa-expand-arrows-alt"></i>
@@ -55,3 +66,12 @@
             </ul>
         </nav>
         <!-- /.navbar -->
+
+        <!-- MODAL -->
+        <div class="modal fade" id="ModalUser">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                </div>
+            </div>
+        </div>

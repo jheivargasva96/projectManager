@@ -19,30 +19,29 @@ class Cusuario extends CI_Controller
 		}
 
 		$data = array();
-        // Nombre de la Página actual
+		// Nombre de la Página actual
 		$data['modulo'] = 'modulo_usuario';
-        $data['name'] = 'USUARIOS';
-        // data de la empresa
+		$data['name'] = 'USUARIOS';
+		// data de la empresa
 		$data['empresa'] = 'PROJECT MANAGER';
 		$data['logo'] = 'assets/img/icono.jpg';
 
-        // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
+		// Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
 		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cusuario">Usuarios</a></li>';
 
 		$data['css'] = array(
-            'js/alertifyjs/css/alertify.rtl.css',
+			'js/alertifyjs/css/alertify.rtl.css',
 			'js/alertifyjs/css/themes/default.rtl.css',
 			'datatables-bs4/css/dataTables.bootstrap4.min.css',
 			'datatables-responsive/css/responsive.bootstrap4.min.css',
 			'datatables-buttons/css/buttons.bootstrap4.min.css'
-        );
+		);
 
-        $data['js'] = array(
-            'bootstrap/js/bootstrap.bundle.min.js',
-            'overlayScrollbars/js/jquery.overlayScrollbars.min.js',
-            'js/adminlte.js',
-            'js/menu.js',
-            'js/alertifyjs/alertify.js',
+		$data['js'] = array(
+			'bootstrap/js/bootstrap.bundle.min.js',
+			'overlayScrollbars/js/jquery.overlayScrollbars.min.js',
+			'js/adminlte.js',
+			'js/alertifyjs/alertify.js',
 			'datatables/jquery.dataTables.min.js',
 			'datatables-bs4/js/dataTables.bootstrap4.min.js',
 			'datatables-responsive/js/dataTables.responsive.min.js',
@@ -56,7 +55,7 @@ class Cusuario extends CI_Controller
 			'datatables-buttons/js/buttons.print.min.js',
 			'datatables-buttons/js/buttons.colVis.min.js',
 			'js/Usuario/usuarios.js'
-        );
+		);
 
 		$this->load->view('pages/head', $data);
 		$this->load->view('pages/header');
@@ -78,7 +77,7 @@ class Cusuario extends CI_Controller
 	{
 		$id  = $_POST['idusuario'];
 		unset($_POST['idusuario']);
-		if ($id == 0) {			
+		if ($id == 0) {
 			$_POST['password'] = hash('sha256', $_POST['identificacion']);
 		}
 		$usuario = new $this->Musuario($_POST);
@@ -105,7 +104,6 @@ class Cusuario extends CI_Controller
 		if ($this->input->is_ajax_request()) {
 			echo json_encode($this->Musuario->guardar());
 		}
-
 	}
 
 	public function ResetPassword()
@@ -121,18 +119,41 @@ class Cusuario extends CI_Controller
 
 	public function newPassword()
 	{
-		$id = $_POST['id'];
-		$this->Musuario->consultar($id);
-		$password = hash('sha256', $_POST['password']);
-		$this->Musuario->set('password', $password);
+		$data = array('success' => false, 'message' => 'Error inesperado, comuniquese con su administrador!');
+		$usuario = new $this->Musuario();
+		$usuario->consultar($this->session->userdata('idusuario'));
+		$actual = hash('sha256', $_POST['actual']);
+
+		if ($actual == $usuario->get('password')) {
+			$usuario->set('password', hash('sha256', $_POST['nueva']));
+			$dataSave = $usuario->guardar();
+			if ($dataSave['success'] == true) {
+				$data['success'] = true;
+				$data['message'] = 'La contraseña se actualizo correctamente';
+			}			
+		} else {
+			$data['success'] = false;
+			$data['message'] = 'La contraseña actual no coincide';
+		}
+
 		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Musuario->guardar());
+			echo json_encode($data);
 		}
 	}
 
 	public function Modal()
 	{
 		$this->load->view('usuario/ModalUsuario');
+	}
+
+	public function ModificarPerfil()
+	{
+		$this->load->view('usuario/ModificarPerfil');
+	}
+
+	public function ModalPassword()
+	{
+		$this->load->view('usuario/ModalPassword');
 	}
 
 	public function consultarPerfiles()

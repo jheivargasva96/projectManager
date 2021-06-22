@@ -63,9 +63,7 @@ class Model extends CI_Model
 
     public function consultarMis($id)
     {
-        
-        try
-        {
+        try {
             $this->db->where('responsable', $id);
             $query = $this->db->get($this->tabla);
             return $query->result();
@@ -73,7 +71,6 @@ class Model extends CI_Model
             return false;
         }
     }
-
 
     public function consultarActivos()
     {

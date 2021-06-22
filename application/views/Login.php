@@ -33,10 +33,10 @@
                     </div>
                 </form>
 
-                <!-- <p class="mb-1">
-                    <a href="#">Olvide mi contraseña</a>
+                <p class="mb-1">
+                    <a href="<?= base_url() ?>Clogin/ForgotPassword">Olvide mi contraseña</a>
                 </p>
-                <p class="mb-0">
+                <!-- <p class="mb-0">
                     <a href="#" class="text-center">Registrarme</a>
                 </p> -->
             </div>
