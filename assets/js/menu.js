@@ -1,13 +1,5 @@
 alertify.set('notifier', 'position', 'top-right');
 
-table = 'usuario';
-controlador = 'Cusuario';
-fields = ['identificacion', 'nombres', 'apellidos', 'correo', 'telefono', 'direccion'];
-inactiveFields = [];
-action = true;
-title = 'Actualizar Usuario';
-button = 'Editar'
-
 $(document).ready(function () {
     $(".modulos").hide();
     datos = modulosPrincipales();
@@ -90,7 +82,7 @@ $(document).ready(function () {
                     }
                 },
                 submitHandler: function (form) {
-                    sendData();
+                    sendDataPassword();
                     return false;
                 }
             });
@@ -98,11 +90,11 @@ $(document).ready(function () {
     });
 
     $("#editar_perfil").click(function () {
-        editData($(this).attr('idusuario'));
+        editDataUsuario($(this).attr('idusuario'));
     });
 });
 
-function sendData() {
+function sendDataPassword() {
     $.ajax({
         url: base_url() + 'Cusuario/newPassword',
         type: "POST",
@@ -157,9 +149,9 @@ function modulosSecundarios(cod_padre) {
     return dataC;
 }
 
-function cargarPerfiles() {
+function cargarPerfilesUsuario() {
     $.ajax({
-        url: base_url() + controlador + "/consultarPerfiles",
+        url: base_url() + "Cusuario/consultarPerfiles",
         type: "POST",
         async: false,
         success: function (resultado) {
@@ -184,9 +176,9 @@ function cargarPerfiles() {
     });
 }
 
-function cargarTipoDocumento() {
+function cargarTipoDocumentoUsuario() {
     $.ajax({
-        url: base_url() + controlador + "/consultarTipoIdentificacion",
+        url: base_url() + "Cusuario/consultarTipoIdentificacion",
         type: "POST",
         async: false,
         success: function (resultado) {
@@ -211,21 +203,24 @@ function cargarTipoDocumento() {
     });
 }
 
-function editData(id) {
-    $("#ModalUser .modal-content").load(base_url() + controlador + '/ModificarPerfil', function () {
+function editDataUsuario(id) {
+    $("#ModalUser .modal-content").load(base_url() + 'Cusuario/ModificarPerfil', function () {
         $("#ModalUser").modal({
             backdrop: 'static',
             keyboard: true,
             show: true
         });
 
-        cargarPerfiles();
-        cargarTipoDocumento();
+        var title = 'Actualizar Usuario';
+        var button = 'Editar';
+
+        cargarPerfilesUsuario();
+        cargarTipoDocumentoUsuario();
 
         $('#title').text(title);
         $("#guardar").html(button);
 
-        consultar(id);
+        consultarUsuario(id);
 
         $("form").on('submit', function (e) {
             e.preventDefault();
@@ -234,10 +229,10 @@ function editData(id) {
     });
 }
 
-function consultar(id) {
+function consultarUsuario(id) {
     $.ajax({
         type: "POST",
-        url: base_url() + controlador + "/consultar",
+        url: base_url() + "Cusuario/consultar",
         data: {
             'id': id
         },
@@ -252,10 +247,6 @@ function consultar(id) {
                         $('[name="' + key + '"]').val(valor);
                     }                    
                 }
-
-                for (i = 0; i < inactiveFields.length; i++) {
-                    $("[name='" + inactiveFields[i] + "']").attr('readonly', true);
-                }
             } catch (e) {
                 alertify.error('¡Error! Los datos no han podido ser procesados (JSON.parse-Error)');
                 console.log(e);
@@ -269,7 +260,7 @@ function consultar(id) {
 
 function sendDataPerfil() {
     $.ajax({
-        url: base_url() + controlador + '/guardar',
+        url: base_url() + 'Cusuario/guardar',
         type: "POST",
         data: $("#form").serialize(),
         success: function (resultado) {

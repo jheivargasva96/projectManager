@@ -44,7 +44,6 @@ class Cperfil extends CI_Controller
 			'bs-custom-file-input/bs-custom-file-input.min.js',
 			'js/adminlte.js',
 			'js/demo.js',
-			'js/menu.js',
 			'js/alertifyjs/alertify.js',
 			'datatables/jquery.dataTables.min.js',
 			'datatables-bs4/js/dataTables.bootstrap4.min.js',

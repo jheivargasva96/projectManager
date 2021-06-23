@@ -41,7 +41,6 @@ class Cprograma extends CI_Controller
             'bootstrap/js/bootstrap.bundle.min.js',
             'overlayScrollbars/js/jquery.overlayScrollbars.min.js',
             'js/adminlte.js',
-            'js/menu.js',
             'js/alertifyjs/alertify.js',
 			'datatables/jquery.dataTables.min.js',
 			'datatables-bs4/js/dataTables.bootstrap4.min.js',
