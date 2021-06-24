@@ -96,7 +96,6 @@ class Cproyecto extends CI_Controller
             'bootstrap/js/bootstrap.bundle.min.js',
             'overlayScrollbars/js/jquery.overlayScrollbars.min.js',
             'js/adminlte.js',
-            'js/menu.js',
             'js/alertifyjs/alertify.js',
 			'datatables/jquery.dataTables.min.js',
 			'datatables-bs4/js/dataTables.bootstrap4.min.js',
@@ -121,6 +120,51 @@ class Cproyecto extends CI_Controller
 		$this->load->view('pages/footer');
 		$this->load->view('pages/script');
     }
+
+	public function reporte()
+    {
+        if (!$this->session->userdata('idusuario')) {
+			redirect('Cinicio');
+		}
+
+		$data = array();
+        // Nombre de la Página actual
+		$data['modulo'] = 'modulo_reporte_proyectos';
+        $data['name'] = ' Reporte Proyectos';
+        // data de la empresa
+		$data['empresa'] = 'PROJECT MANAGER';
+		$data['logo'] = 'assets/img/icono.jpg';
+
+        // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
+		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cproyecto">Reporte</a></li>';
+
+		$data['css'] = array(
+			'chart.js/Chart.css',
+			'chart.js/Chart.min.css',
+            'js/alertifyjs/css/alertify.rtl.css',
+			'js/alertifyjs/css/themes/default.rtl.css'
+        );
+
+        $data['js'] = array(
+			'bootstrap/js/bootstrap.bundle.min.js',
+			'js/demo.js',
+			'js/adminlte.min.js',
+			'js/alertifyjs/alertify.js',
+			'chart.js/Chart.min.js',
+			'js/proyecto/Barrasproyecto.js',
+        );
+
+		$this->load->view('pages/head', $data);
+		$this->load->view('pages/header');
+		$this->load->view('pages/menu');
+		$this->load->view('pages/wrapper');
+		$this->load->view('proyecto/Barrasproyecto');
+		$this->load->view('pages/footer');
+		$this->load->view('pages/script');
+    }
+
+
+
 
     public function consultarTodos()
 	{
