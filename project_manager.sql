@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 22-06-2021 a las 20:35:07
+-- Tiempo de generación: 24-06-2021 a las 23:47:16
 -- Versión del servidor: 8.0.25
 -- Versión de PHP: 7.4.3
 
@@ -35,9 +35,18 @@ CREATE TABLE `actividad` (
   `responsable` int NOT NULL,
   `fecha` date NOT NULL,
   `lugar` varchar(200) NOT NULL,
-  `estado` varchar(30) NOT NULL,
+  `estado` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'pendiente',
   `indicador_idindicador` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `actividad`
+--
+
+INSERT INTO `actividad` (`idactividad`, `nombre`, `descripcion`, `responsable`, `fecha`, `lugar`, `estado`, `indicador_idindicador`) VALUES
+(1, 'desarrollo', 'descripción de activdades', 1, '2021-06-09', '', 'pendiente', 1),
+(2, 'cesar indicador22', 'cesar indicar', 1, '2021-06-09', 'esto es un  lugar', 'pendiente', 1),
+(7, 'nomb', 'aass', 7, '2021-06-10', '', 'pendiente', 1);
 
 -- --------------------------------------------------------
 
@@ -48,6 +57,7 @@ CREATE TABLE `actividad` (
 CREATE TABLE `anexo` (
   `idanexo` int NOT NULL,
   `evidencia_idevidencia` int NOT NULL,
+  `documento` varchar(255) NOT NULL,
   `ruta` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -62,6 +72,17 @@ CREATE TABLE `estado` (
   `color` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Volcado de datos para la tabla `estado`
+--
+
+INSERT INTO `estado` (`nombre`, `color`) VALUES
+('en proceso', '#E67E22'),
+('pendiente', '#F4D03F'),
+('terminado', '#229954'),
+('terminado con retraso', '#5B2C6F'),
+('vencido', '#C0392B');
+
 -- --------------------------------------------------------
 
 --
@@ -71,7 +92,9 @@ CREATE TABLE `estado` (
 CREATE TABLE `evidencia` (
   `idevidencia` int NOT NULL,
   `observaciones` text NOT NULL,
-  `actividad_idactividad` int NOT NULL
+  `fecha` date NOT NULL,
+  `actividad_idactividad` int NOT NULL,
+  `estado` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -85,9 +108,19 @@ CREATE TABLE `indicador` (
   `nombre` varchar(255) NOT NULL,
   `descripcion` text NOT NULL,
   `responsable` int NOT NULL,
-  `estado` varchar(30) NOT NULL,
-  `proyecto_idproyecto` int NOT NULL
+  `estado` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'pendiente',
+  `proyecto_idproyecto` int NOT NULL,
+  `cumplimiento` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `indicador`
+--
+
+INSERT INTO `indicador` (`idindicador`, `nombre`, `descripcion`, `responsable`, `estado`, `proyecto_idproyecto`, `cumplimiento`) VALUES
+(1, 'Fotografia', 'fotografias en alta resolucion de las fuentes hidricas', 7, 'activo', 2, 0),
+(2, 'Actas', 'Actas de compromisos con los diferentes entes', 1, 'activo', 1, 0),
+(3, 'Informes', 'Informes de las visitas realizadas a minas', 7, 'activo', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -143,8 +176,18 @@ CREATE TABLE `participante` (
   `idparticipante` int NOT NULL,
   `usuario_idusuario` int NOT NULL,
   `actividad_idactividad` int NOT NULL,
-  `estado` int NOT NULL
+  `estado` varchar(30) NOT NULL DEFAULT 'pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `participante`
+--
+
+INSERT INTO `participante` (`idparticipante`, `usuario_idusuario`, `actividad_idactividad`, `estado`) VALUES
+(4, 1, 1, '1'),
+(33, 7, 2, '1'),
+(35, 7, 1, '1'),
+(36, 7, 7, '1');
 
 -- --------------------------------------------------------
 
@@ -236,16 +279,17 @@ CREATE TABLE `programa` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` text,
   `responsable` int NOT NULL,
-  `estado` varchar(30) NOT NULL DEFAULT 'activo'
+  `estado` varchar(30) NOT NULL DEFAULT 'activo',
+  `cumplimiento` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `programa`
 --
 
-INSERT INTO `programa` (`idprograma`, `nombre`, `descripcion`, `responsable`, `estado`) VALUES
-(1, 'Programa 1', 'Pruebas', 1, 'activo'),
-(2, 'Programa 2', 'Prueba 2', 6, 'activo');
+INSERT INTO `programa` (`idprograma`, `nombre`, `descripcion`, `responsable`, `estado`, `cumplimiento`) VALUES
+(1, 'Programa 1', 'Pruebas', 1, 'pendiente', 0),
+(2, 'Programa 2', 'Prueba 2', 6, 'pendiente', 0);
 
 -- --------------------------------------------------------
 
@@ -261,8 +305,19 @@ CREATE TABLE `proyecto` (
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
   `estado` varchar(30) NOT NULL,
-  `programa_idprograma` int NOT NULL
+  `programa_idprograma` int NOT NULL,
+  `cumplimiento` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `proyecto`
+--
+
+INSERT INTO `proyecto` (`idproyecto`, `nombre`, `descripcion`, `responsable`, `fecha_inicio`, `fecha_fin`, `estado`, `programa_idprograma`, `cumplimiento`) VALUES
+(1, 'Medio ambiente', 'Cuidar el ecosistema', 7, '2021-07-01', '2021-12-31', 'activo', 1, 0),
+(2, 'Rios', 'cuidado del agua de los rios', 1, '2021-07-01', '2021-09-30', 'activo', 2, 0),
+(3, 'Mineria', 'Cuidar las fuentes hídricas de la minería ilegal', 7, '2021-01-01', '2021-12-31', 'activo', 2, 0),
+(4, 'avistamiento', 'de aves', 7, '2021-06-18', '2021-06-25', 'activo', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -320,7 +375,9 @@ CREATE TABLE `usuario` (
 INSERT INTO `usuario` (`idusuario`, `identificacion`, `nombres`, `apellidos`, `correo`, `telefono`, `direccion`, `fecha_nacimiento`, `password`, `estado`, `tipo_identificacion_idtipo_identificacion`, `perfil_idperfil`, `token`) VALUES
 (1, '1093226956', 'Jheison', 'Vargas Vargas', 'jheison.vargas@unisarc.edu.co', '3104461256', 'CR 15B 20-31', '1996-08-09', '4f07343be927786fd841b4ab582cf0e9bced6ef97b799bc6354c7ec6d3cbb305', 'activo', 1, 1, ''),
 (5, '1093226957', 'Carlos', 'Gomez', 'carlos@gmail.com', '3104461257', 'CR 15B 20-32', '1996-08-09', 'd7f1a1f6e7e30054b0d132d60c12eea42e5cc7761c9950e0fd3f56cf6d4f3560', 'activo', 1, 1, NULL),
-(6, '1093226958', 'Andres', 'Farfan', 'andres@email.com', '3104461258', 'CR 15B 20-33', '1998-06-16', 'a9f4e06b3d7682eae4b86805cd223b004f7dc370984153a6b135e68c0eb5576a', 'activo', 1, 2, NULL);
+(6, '1093226958', 'Andres', 'Farfan', 'andres@email.com', '3104461258', 'CR 15B 20-33', '1998-06-16', 'a9f4e06b3d7682eae4b86805cd223b004f7dc370984153a6b135e68c0eb5576a', 'activo', 1, 2, NULL),
+(7, '4585401', 'cesar  augusto', 'arias arcila', 'cesar.arias@unisarc.edu.co', '3123115396', 'santa rosa', '1985-10-02', '69ab919a026d4325f0db4b27fca637099b8b455478a0054984d9174a1d6ac9bc', 'activo', 1, 1, NULL),
+(8, '1088318879', 'Cristhian', 'Cano Correa', 'cristhian.cano@unisarc.edu.co', '3226601318', 'Calle 45 No. 61-20', '1994-07-10', '6b196de4ca19daee36699b206f0094126d68b0f27d3cc6a0daabd3576d9ea48c', 'activo', 1, 1, '');
 
 --
 -- Índices para tablas volcadas
@@ -417,7 +474,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `actividad`
 --
 ALTER TABLE `actividad`
-  MODIFY `idactividad` int NOT NULL AUTO_INCREMENT;
+  MODIFY `idactividad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `anexo`
@@ -435,7 +492,7 @@ ALTER TABLE `evidencia`
 -- AUTO_INCREMENT de la tabla `indicador`
 --
 ALTER TABLE `indicador`
-  MODIFY `idindicador` int NOT NULL AUTO_INCREMENT;
+  MODIFY `idindicador` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `modulo`
@@ -447,7 +504,7 @@ ALTER TABLE `modulo`
 -- AUTO_INCREMENT de la tabla `participante`
 --
 ALTER TABLE `participante`
-  MODIFY `idparticipante` int NOT NULL AUTO_INCREMENT;
+  MODIFY `idparticipante` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `perfil`
@@ -471,7 +528,7 @@ ALTER TABLE `programa`
 -- AUTO_INCREMENT de la tabla `proyecto`
 --
 ALTER TABLE `proyecto`
-  MODIFY `idproyecto` int NOT NULL AUTO_INCREMENT;
+  MODIFY `idproyecto` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_identificacion`
@@ -483,7 +540,7 @@ ALTER TABLE `tipo_identificacion`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idusuario` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idusuario` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas
