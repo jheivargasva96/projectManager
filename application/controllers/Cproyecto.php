@@ -11,6 +11,7 @@ class Cproyecto extends CI_Controller
 		$this->load->model('Mproyecto');
         $this->load->model('Musuario');
 		$this->load->model('Mprograma');
+		$this->load->model('Mindicador');
 	}
 
     public function index()
@@ -163,10 +164,7 @@ class Cproyecto extends CI_Controller
 		$this->load->view('pages/script');
     }
 
-
-
-
-    public function consultarTodos()
+	public function consultarTodos()
 	{
 		if ($this->input->is_ajax_request()) {
 			echo json_encode($this->Mproyecto->consultarTodos());
@@ -195,23 +193,26 @@ class Cproyecto extends CI_Controller
 		}
 	}
 	
-
     public function Modal()
 	{
 		$this->load->view('proyecto/ModalProyecto');
 	}
 
-
     public function Estado()
 	{
 		$id = $_POST['id'];
 		$estado = $_POST['estado'];
-		$this->Mproyecto->consultar($id);
-		$this->Mproyecto->set('estado', $estado);
-		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mproyecto->guardar());
+		if ($estado == 'inactivo') {
+			$this->Mproyecto->consultar($id);
+			$this->Mproyecto->set('estado', $estado);
+			if ($this->input->is_ajax_request()) {
+				echo json_encode($this->Mproyecto->guardar());
+			}
+		} else {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode($this->ValidarEstados($id));
+			}
 		}
-
 	}
 
     public function consultar()
@@ -231,5 +232,32 @@ class Cproyecto extends CI_Controller
 		if ($this->input->is_ajax_request()) {
 			echo json_encode($proyecto->guardar());
 		}
+	}
+
+	public function ValidarEstados($id)
+	{
+		$today = date('Y-m-d');
+		$project = new $this->Mproyecto();
+		$project->consultar($id);
+		$indicatorsNumber = $this->Mindicador->CountParent($id);
+		$finishedIndicators = $this->Mindicador->CountParent('terminado', $id);
+		$state = 'pendiente';
+		if ($indicatorsNumber == $finishedIndicators) {
+			if ($today <= $project->get('fecha_fin')) {
+				$state = 'terminado';
+			} else {
+				$state = 'terminado con retraso';
+			}
+		} else if ($finishedIndicators < $indicatorsNumber) {
+			if ($today <= $project->get('fecha_fin')) {
+				$state = 'en proceso';
+			} else {
+				$state = 'vencido';
+			}
+		}
+		$percentage = $finishedIndicators * 100 / $indicatorsNumber;
+		$project->set('estado', $state);
+		$project->set('cumplimiento', $percentage);
+		return $project->guardar();
 	}
 }

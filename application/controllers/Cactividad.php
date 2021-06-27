@@ -175,6 +175,7 @@ class Cactividad extends CI_Controller
 		$this->load->view('pages/footer');
 		$this->load->view('pages/script');
     }
+
 	public function participando()
     {
         if (!$this->session->userdata('idusuario')) {
@@ -279,20 +280,24 @@ class Cactividad extends CI_Controller
 		$this->load->view('actividad/Modalactividad');
 	}
 
-
     public function Estado()
 	{
 		$id = $_POST['id'];
 		$estado = $_POST['estado'];
-		$this->Mactividad->consultar($id);
-		$this->Mactividad->set('estado', $estado);
-		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mactividad->guardar());
+		if ($estado == 'inactivo') {
+			$this->Mactividad->consultar($id);
+			$this->Mactividad->set('estado', $estado);
+			if ($this->input->is_ajax_request()) {
+				echo json_encode($this->Mactividad->guardar());
+			}
+		} else {
+			$this->load->model('Mevidencia');
+			$state = $this->Mevidencia->last($id);
+			if ($this->input->is_ajax_request()) {
+				echo json_encode($this->ValidarEstados($id, $state));
+			}
 		}
-
 	}
-
-	
 
     public function consultar()
 	{
@@ -351,5 +356,25 @@ class Cactividad extends CI_Controller
 		if ($this->input->is_ajax_request()) {
 			echo json_encode($this->Mparticipante->delete());
 		}
+	}
+
+	public function ValidarEstados($id, $state)
+	{
+		$today = date('Y-m-d');
+		$activity = new $this->Mactividad();
+		$activity->consultar($id);
+
+		if ($state == 'terminado') {
+			if ($today > $activity->get('fecha')) {
+				$state = 'terminado con retraso';
+			}
+		} else if ($state == 'en proceso') {
+			if ($today > $activity->get('fecha')) {
+				$state = 'vencido';
+			}
+		}
+
+		$activity->set('estado', $state);
+		return $activity->guardar();
 	}
 }

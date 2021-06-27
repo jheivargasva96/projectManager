@@ -10,7 +10,6 @@ class Mactividad extends Model
         parent::__construct($datos);
     }
 
-
     public function consultarInscribir($id)
     {
         try {
@@ -46,8 +45,8 @@ class Mactividad extends Model
         }
     }
 
-    public function uploadImg(){
-
+    public function uploadImg()
+	{
 		if (isset($_FILES['Lista_Anexos'])){
 			if(preg_match('/#|"|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�/', $_FILES['Lista_Anexos']['name'])===1){
 				return 3;
@@ -128,7 +127,6 @@ class Mactividad extends Model
 		return $subidas;
 	}
 
-
 	public function obtenerAnexoActividad()
     {
 		$id  = $_POST['id'];
@@ -144,7 +142,8 @@ class Mactividad extends Model
         }
     }
 
-	public function eliminarAnexo(){
+	public function eliminarAnexo()
+	{
 		$codigo = $this->input->post('id');
 		$ruta = $this->db->query("SELECT ruta FROM anexo WHERE idanexo = $codigo")->result();
 		$this->db->trans_begin();
@@ -166,4 +165,22 @@ class Mactividad extends Model
 		}
 	}
 
+	public function CountState($state, $parentId)
+    {
+        $this->db->select('count(*) as cant');
+        $this->db->from($this->tabla);
+        $this->db->where('estado', $state);
+        $this->db->where('indicador_idindicador', $parentId);
+        $query = $this->db->get()->row();
+        return $query->cant;
+    }
+
+    public function CountParent($parentId)
+    {
+        $this->db->select('count(*) as cant');
+        $this->db->from($this->tabla);
+        $this->db->where('indicador_idindicador', $parentId);
+        $query = $this->db->get()->row();
+        return $query->cant;
+    }
 }

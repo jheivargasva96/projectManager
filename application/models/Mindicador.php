@@ -9,4 +9,23 @@ class Mindicador extends Model
         $this->tabla = 'indicador';
         parent::__construct($datos);
     }
+
+    public function CountState($state, $parentId)
+    {
+        $this->db->select('count(*) as cant');
+        $this->db->from($this->tabla);
+        $this->db->where('estado', $state);
+        $this->db->where('proyecto_idproyecto', $parentId);
+        $query = $this->db->get()->row();
+        return $query->cant;
+    }
+
+    public function CountParent($parentId)
+    {
+        $this->db->select('count(*) as cant');
+        $this->db->from($this->tabla);
+        $this->db->where('proyecto_idproyecto', $parentId);
+        $query = $this->db->get()->row();
+        return $query->cant;
+    }
 }

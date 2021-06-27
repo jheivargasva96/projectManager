@@ -11,6 +11,7 @@ class Cindicador extends CI_Controller
 		$this->load->model('Mindicador');
         $this->load->model('Musuario');
 		$this->load->model('Mproyecto');
+		$this->load->model('Mactividad');
 	}
 
     public function index()
@@ -153,12 +154,17 @@ class Cindicador extends CI_Controller
 	{
 		$id = $_POST['id'];
 		$estado = $_POST['estado'];
-		$this->Mindicador->consultar($id);
-		$this->Mindicador->set('estado', $estado);
-		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mindicador->guardar());
+		if ($estado == 'inactivo') {
+			$this->Mindicador->consultar($id);
+			$this->Mindicador->set('estado', $estado);
+			if ($this->input->is_ajax_request()) {
+				echo json_encode($this->Mindicador->guardar());
+			}
+		} else {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode($this->ValidarEstados($id));
+			}
 		}
-
 	}
 
 	public function consultarPro()
@@ -185,5 +191,24 @@ class Cindicador extends CI_Controller
 		if ($this->input->is_ajax_request()) {
 			echo json_encode($indicador->guardar());
 		}
+	}
+
+	public function ValidarEstados($id)
+	{
+		$indicator = new $this->Mindicador();
+		$indicator->consultar($id);
+
+		$activitiesNumber = $this->Mactividad->CountParent($id);
+		$finishedActivities = $this->Mactividad->CountParent('terminado', $id);
+		$state = 'pendiente';
+		if ($activitiesNumber == $finishedActivities) {
+			$state = 'terminado';
+		} elseif ($finishedActivities < $activitiesNumber) {
+			$state = 'en proceso';
+		}
+		$percentage = $finishedActivities * 100 / $activitiesNumber;
+		$indicator->set('estado', $state);
+		$indicator->set('cumplimiento', $percentage);
+		return $indicator->guardar();
 	}
 }
