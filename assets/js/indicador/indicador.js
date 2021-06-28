@@ -21,7 +21,7 @@ var DataTable = $('#dataTable').DataTable({
     responsive: true,
     processing: true,
     pageLength: 10,
-    columnDefs: [
+    columnDefs: [ 
         {
             "className": "text-center",
             "targets": "_all"
@@ -39,10 +39,10 @@ var DataTable = $('#dataTable').DataTable({
 
             var state = $(this).closest("tr").find("td:last .stateEdit").attr("value");
 
-            if (state == 'activo') {
-                state = 'inactivo';
+            if (state == 'pendiente') {
+                state = 'terminado';
             } else {
-                state = 'activo';
+                state = 'pendiente';
             }
 
             saveState(state, data[0]);
@@ -119,7 +119,7 @@ function dataLoad() {
                     var stateEdit = '';
 
                     if (fields.includes('estado')) {
-                        if (this.estado == 'activo') {
+                        if (this.estado == 'pendiente') {
                             stateEdit = '<button class="stateEdit btn btn-danger btn-xs" value="' + this.estado + '" title="Inactivar" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-times"></span></button>';
                         } else {
                             stateEdit = '<button class="stateEdit btn btn-success btn-xs" value="' + this.estado + '" title="Activar" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-check"></span></button>';

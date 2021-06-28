@@ -83,6 +83,18 @@ class Model extends CI_Model
         }
     }
 
+    public function consultarDisponible()
+    {
+        $disponibles = array ('pendiente', 'en proceso');
+        try {
+            $this->db->where_in('estado', $disponibles);
+            $query = $this->db->get($this->tabla);
+            return $query->result();
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
     public function get($campo)
     {
         return $this->campos[$campo];

@@ -22,7 +22,7 @@ class Cactividad extends CI_Controller
 
 		$data = array();
         // Nombre de la Página actual
-		$data['modulo'] = 'modulo_mis_actividades';
+		$data['modulo'] = 'modulo_lista_actividades';
         $data['name'] = 'Actividades';
         // data de la empresa
 		$data['empresa'] = 'PROJECT MANAGER';
@@ -76,7 +76,7 @@ class Cactividad extends CI_Controller
 
 		$data = array();
         // Nombre de la Página actual
-		$data['modulo'] = 'modulo_lista_actividades';
+		$data['modulo'] = 'modulo_mis_actividades';
         $data['name'] = 'actividad';
         // data de la empresa
 		$data['empresa'] = 'PROJECT MANAGER';
@@ -247,7 +247,7 @@ class Cactividad extends CI_Controller
 	public function consultarIndicador()
 	{
 		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mindicador->consultarActivos());
+			echo json_encode($this->Mindicador->consultarDisponible());
 		}
 	}
 

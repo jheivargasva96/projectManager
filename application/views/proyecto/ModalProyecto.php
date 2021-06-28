@@ -50,7 +50,7 @@
                 </select>
             </div>
         </div>
-
+ 
         <div class="form-group">
             <p>Los campos marcados con (*) son obligatorios</p>
         </div>

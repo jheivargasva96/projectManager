@@ -3,10 +3,11 @@ function getPrograms() {
   $.ajax({
       type: "POST",
       async: false,
-      url: base_url() + "Cproyecto/consultarProyectos",
+      url: base_url() + "Cindicador/consultarIndicadores",
       success: function (resultado) {
           try {
               data = JSON.parse(resultado);
+              //console.log(data);
           } catch (e) {
               alertify.error('¡Error! Los datos no han podido ser procesados (JSON.parse-Error)');
               console.log(e);
@@ -16,14 +17,14 @@ function getPrograms() {
   return data;
 }
 
-function getProjects(idproyect, state = '') {
+function getProjects(idindica, state = '') {
   var cant = 0;
   $.ajax({
       type: "POST",
       async: false,
-      url: base_url() + "Creportes/getCountIndicator",
+      url: base_url() + "Creportes/getCountActivity",
       data: {
-          idproyecto: idproyect,
+          idindicador: idindica,
           estado: state
 
       },
@@ -53,9 +54,9 @@ $(function () {
   var i = 0;
   $.each(programs, function () {
       labels[i] = this.nombre;
-      projects[i] = getProjects(this.idproyecto);
-      finished[i] = getProjects(this.idproyecto, 'terminado');
-      pendiente[i] = getProjects(this.idproyecto, 'pendiente');
+      projects[i] = getProjects(this.idindicador);
+      finished[i] = getProjects(this.idindicador, 'terminado');
+      pendiente[i] = getProjects(this.idindicador, 'pendiente');
       i++;
   });
 
@@ -63,7 +64,7 @@ $(function () {
       labels  : labels,
       datasets: [
           {
-              label: 'Total Indicadores',
+              label: 'Total Actividades',
               backgroundColor: 'rgba(230,126,34,0.7)',
               borderColor: 'rgba(60,141,188,0.8)',
               pointRadius: false,

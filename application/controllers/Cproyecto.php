@@ -170,6 +170,13 @@ class Cproyecto extends CI_Controller
 			echo json_encode($this->Mproyecto->consultarTodos());
 		}
 	}
+
+	public function consultarProyectos()
+	{
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mproyecto->consultarTodos());
+		}
+	}
 	
 	public function consultarMisProyectos()
 	{

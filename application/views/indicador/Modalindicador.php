@@ -24,7 +24,7 @@
                 <input type="text" name="descripcion" id="descripcion" class="form-control" placeholder="Descripción...">
             </div>
         </div>
-
+ 
         <div class="row">
             <div class="form-group col-md-6">
                 <label>Responsable *</label>

@@ -17,7 +17,7 @@ var DataTable = $('#dataTable').DataTable({
     searching: true,
     ordering: true,
     info: true,
-    autoWidth: false,
+    autoWidth: false, 
     responsive: true,
     processing: true,
     pageLength: 10,

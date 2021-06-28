@@ -123,7 +123,62 @@ class Cindicador extends CI_Controller
 		$this->load->view('pages/script');
     }
 
+	public function reporte()
+    {
+        if (!$this->session->userdata('idusuario')) {
+			redirect('Cinicio');
+		}
+
+		$data = array();
+        // Nombre de la Página actual
+		$data['modulo'] = 'modulo_reporte_indicadores';
+        $data['name'] = ' Reporte indicadores';
+        // data de la empresa
+		$data['empresa'] = 'PROJECT MANAGER';
+		$data['logo'] = 'assets/img/icono.jpg';
+
+        // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
+		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cindicador">Reporte</a></li>';
+
+		$data['css'] = array(
+			'chart.js/Chart.css',
+			'chart.js/Chart.min.css',
+            'js/alertifyjs/css/alertify.rtl.css',
+			'js/alertifyjs/css/themes/default.rtl.css'
+        );
+
+        $data['js'] = array(
+			'bootstrap/js/bootstrap.bundle.min.js',
+			'js/demo.js',
+			'js/adminlte.min.js',
+			'js/alertifyjs/alertify.js',
+			'chart.js/Chart.min.js',
+			'js/indicador/Barrasindicador.js',
+        );
+
+		$this->load->view('pages/head', $data);
+		$this->load->view('pages/header');
+		$this->load->view('pages/menu');
+		$this->load->view('pages/wrapper');
+		$this->load->view('indicador/Barrasindicador');
+		$this->load->view('pages/footer');
+		$this->load->view('pages/script');
+    }
+
+	public function consultarPro()
+	{
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mproyecto->consultarDisponible());
+		}
+	}
     public function consultarTodos()
+	{
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mindicador->consultarTodos());
+		}
+	}
+
+	public function consultarIndicadores()
 	{
 		if ($this->input->is_ajax_request()) {
 			echo json_encode($this->Mindicador->consultarTodos());
@@ -154,7 +209,7 @@ class Cindicador extends CI_Controller
 	{
 		$id = $_POST['id'];
 		$estado = $_POST['estado'];
-		if ($estado == 'inactivo') {
+		if ($estado == 'terminado') {
 			$this->Mindicador->consultar($id);
 			$this->Mindicador->set('estado', $estado);
 			if ($this->input->is_ajax_request()) {
@@ -167,12 +222,7 @@ class Cindicador extends CI_Controller
 		}
 	}
 
-	public function consultarPro()
-	{
-		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mproyecto->consultarActivos());
-		}
-	}
+	
 
     public function consultar()
 	{
