@@ -19,7 +19,7 @@ class Cinicio extends CI_Controller
         $data = array();
         // Nombre de la Página actual
 		$data['modulo'] = 'inicio';
-        $data['name'] = 'INICIO';
+        $data['name'] = 'GRAFICO PROGRAMAS';
         // Datos de la empresa
 		$data['empresa'] = 'PROJECT MANAGER';
 		$data['logo'] = 'assets/img/icono.jpg';
@@ -28,14 +28,18 @@ class Cinicio extends CI_Controller
 		$data['ruta'] = '<li class="breadcrumb-item active"><a href="' . base_url() . '/Cinicio">Inicio</a></li>';
 
 		$data['css'] = array(
-            'js/alertifyjs/css/alertify.rtl.css'
+            'js/alertifyjs/css/alertify.rtl.css',
+            'chart.js/Chart.css',
+			'chart.js/Chart.min.css'
         );
 
         $data['js'] = array(
             'bootstrap/js/bootstrap.bundle.min.js',
             'overlayScrollbars/js/jquery.overlayScrollbars.min.js',
             'js/adminlte.js',
-            'js/alertifyjs/alertify.js'
+            'js/alertifyjs/alertify.js',
+            'chart.js/Chart.min.js',
+            'js/inicio.js'
         );
 
         $this->load->view('pages/head', $data);

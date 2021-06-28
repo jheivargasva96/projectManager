@@ -177,4 +177,11 @@ class Cprograma extends CI_Controller
 			echo json_encode($this->Mprograma->consultarMis($id));
 		}
 	}
+
+	public function getActive()
+	{
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mprograma->consultarActivos());
+		}
+	}
 }

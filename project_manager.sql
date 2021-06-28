@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 24-06-2021 a las 23:47:16
+-- Tiempo de generación: 27-06-2021 a las 21:28:04
 -- Versión del servidor: 8.0.25
 -- Versión de PHP: 7.4.3
 
@@ -78,6 +78,7 @@ CREATE TABLE `estado` (
 
 INSERT INTO `estado` (`nombre`, `color`) VALUES
 ('en proceso', '#E67E22'),
+('inactivo', '#4D5656'),
 ('pendiente', '#F4D03F'),
 ('terminado', '#229954'),
 ('terminado con retraso', '#5B2C6F'),
@@ -118,9 +119,9 @@ CREATE TABLE `indicador` (
 --
 
 INSERT INTO `indicador` (`idindicador`, `nombre`, `descripcion`, `responsable`, `estado`, `proyecto_idproyecto`, `cumplimiento`) VALUES
-(1, 'Fotografia', 'fotografias en alta resolucion de las fuentes hidricas', 7, 'activo', 2, 0),
-(2, 'Actas', 'Actas de compromisos con los diferentes entes', 1, 'activo', 1, 0),
-(3, 'Informes', 'Informes de las visitas realizadas a minas', 7, 'activo', 3, 0);
+(1, 'Fotografia', 'fotografias en alta resolucion de las fuentes hidricas', 7, 'pendiente', 2, 0),
+(2, 'Actas', 'Actas de compromisos con los diferentes entes', 1, 'pendiente', 1, 0),
+(3, 'Informes', 'Informes de las visitas realizadas a minas', 7, 'pendiente', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -161,7 +162,6 @@ INSERT INTO `modulo` (`idmodulo`, `nombre`, `etiqueta`, `controlador`, `icono`, 
 (15, 'modulo_inscribir_actividades', 'Inscribirse', 'Cactividad/inscribirse', 'fa-clipboard-list', 'activo', 12, 3),
 (16, 'modulo_actividades_participando', 'Participando', 'Cactividad/participando', 'fa-clipboard-list', 'activo', 12, 4),
 (17, 'modulo_reportes', 'Reportes y Gráficos', '', 'fa-chart-bar', 'activo', 0, 7),
-(18, 'modulo_reporte_programas', 'Programas', 'Cprograma/reporte', 'fa-clipboard-list', 'activo', 17, 1),
 (19, 'modulo_reporte_proyectos', 'Proyectos', 'Cproyecto/reporte', 'fa-clipboard-list', 'activo', 17, 2),
 (20, 'modulo_reporte_indicadores', 'Indicadores', 'Cindicador/reporte', 'fa-clipboard-list', 'activo', 17, 3),
 (21, 'modulo_reporte_actividades', 'Actividades', 'Cactividad/reporte', 'fa-clipboard-list', 'activo', 17, 4);
@@ -245,7 +245,6 @@ INSERT INTO `permiso` (`idpermiso`, `perfil_idperfil`, `modulo_idmodulo`) VALUES
 (87, 1, 15),
 (88, 1, 16),
 (89, 1, 17),
-(90, 1, 18),
 (91, 1, 19),
 (92, 1, 20),
 (93, 1, 21),
@@ -279,17 +278,16 @@ CREATE TABLE `programa` (
   `nombre` varchar(150) NOT NULL,
   `descripcion` text,
   `responsable` int NOT NULL,
-  `estado` varchar(30) NOT NULL DEFAULT 'activo',
-  `cumplimiento` float NOT NULL
+  `estado` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `programa`
 --
 
-INSERT INTO `programa` (`idprograma`, `nombre`, `descripcion`, `responsable`, `estado`, `cumplimiento`) VALUES
-(1, 'Programa 1', 'Pruebas', 1, 'pendiente', 0),
-(2, 'Programa 2', 'Prueba 2', 6, 'pendiente', 0);
+INSERT INTO `programa` (`idprograma`, `nombre`, `descripcion`, `responsable`, `estado`) VALUES
+(1, 'Programa 1', 'Pruebas', 1, 'activo'),
+(2, 'Programa 2', 'Prueba 2', 6, 'activo');
 
 -- --------------------------------------------------------
 
@@ -314,10 +312,10 @@ CREATE TABLE `proyecto` (
 --
 
 INSERT INTO `proyecto` (`idproyecto`, `nombre`, `descripcion`, `responsable`, `fecha_inicio`, `fecha_fin`, `estado`, `programa_idprograma`, `cumplimiento`) VALUES
-(1, 'Medio ambiente', 'Cuidar el ecosistema', 7, '2021-07-01', '2021-12-31', 'activo', 1, 0),
-(2, 'Rios', 'cuidado del agua de los rios', 1, '2021-07-01', '2021-09-30', 'activo', 2, 0),
-(3, 'Mineria', 'Cuidar las fuentes hídricas de la minería ilegal', 7, '2021-01-01', '2021-12-31', 'activo', 2, 0),
-(4, 'avistamiento', 'de aves', 7, '2021-06-18', '2021-06-25', 'activo', 1, 0);
+(1, 'Medio ambiente', 'Cuidar el ecosistema', 7, '2021-07-01', '2021-12-31', 'pendiente', 1, 0),
+(2, 'Rios', 'cuidado del agua de los rios', 1, '2021-07-01', '2021-09-30', 'pendiente', 2, 0),
+(3, 'Mineria', 'Cuidar las fuentes hídricas de la minería ilegal', 7, '2021-01-01', '2021-12-31', 'terminado', 2, 0),
+(4, 'avistamiento', 'de aves', 7, '2021-06-18', '2021-06-25', 'pendiente', 1, 0);
 
 -- --------------------------------------------------------
 

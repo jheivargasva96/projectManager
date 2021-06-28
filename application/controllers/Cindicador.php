@@ -209,6 +209,9 @@ class Cindicador extends CI_Controller
 		$percentage = $finishedActivities * 100 / $activitiesNumber;
 		$indicator->set('estado', $state);
 		$indicator->set('cumplimiento', $percentage);
-		return $indicator->guardar();
+		$data = $indicator->guardar();
+		$this->load->library('Cproyecto');
+		$this->Cproyecto->ValidarEstados($indicator->get('proyecto_idproyecto'));
+		return $data;
 	}
 }

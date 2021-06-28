@@ -375,6 +375,9 @@ class Cactividad extends CI_Controller
 		}
 
 		$activity->set('estado', $state);
-		return $activity->guardar();
+		$data = $activity->guardar();
+		$this->load->library('Cindicador');
+		$this->Cindicador->ValidarEstados($activity->get('indicador_idindicador'));
+		return $data;
 	}
 }

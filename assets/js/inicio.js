@@ -1,38 +1,101 @@
-// $(document).ready(function() {
-//     $(".control-sidebar-subheading [data-layout='fixed']").click();
-// });
+function getPrograms() {
+    var data = {};
+    $.ajax({
+        type: "POST",
+        async: false,
+        url: base_url() + "Cprograma/getActive",
+        success: function (resultado) {
+            try {
+                data = JSON.parse(resultado);
+            } catch (e) {
+                alertify.error('¡Error! Los datos no han podido ser procesados (JSON.parse-Error)');
+                console.log(e);
+            }
+        }
+    });
+    return data;
+}
 
-// $("[id=actualizar_password]").on("click", function (e) {
-//     e.preventDefault();
-//     $("#modal_password .modal-content").load('Cinicio/ModalPassword', function () {
-//         $("#modal_password").modal({
-//             backdrop: 'static',
-//             keyboard: true,
-//             show: true
-//         });
-        
-//         $("[id=guardarRegistro]").on("click", function (e) {
-//             e.preventDefault();
-//             console.log($("#frmRegistro").serialize());
-//             $.ajax({
-//                 url: base_url() + "Cusuario/newPassword",
-//                 type: "POST",
-//                 data: $("#frmRegistro").serialize(),
-//                 success: function (resultado) {
-//                     var datos = JSON.parse(resultado);
-//                     if (datos.success == true) {
-//                         alertify.success("Guardado correctamente.");
-//                         $('#modal_password').modal('toggle');
-//                     } else {
-//                         alertify.error('¡Error!, el Usuario no ha podido ser guardado, comuniquese con el adminsitrador del sistema.');
-//                         return false;
-//                     }
-//                 },
-//                 error: function (error) {
-//                     alertify.error('Ocurrio un Error');
-//                     return false;
-//                 }
-//             });
-//         });
-//     });
-// });
+function getProjects(idprogram, state = '') {
+    var cant = 0;
+    $.ajax({
+        type: "POST",
+        async: false,
+        url: base_url() + "Creportes/getCountProjects",
+        data: {
+            idprograma: idprogram,
+            estado: state
+        },
+        success: function (resultado) {
+            try {
+                data = JSON.parse(resultado);
+                cant = data.amount;
+            } catch (e) {
+                alertify.error('¡Error! Los datos no han podido ser procesados (JSON.parse-Error)');
+                console.log(e);
+            }
+        }
+    });
+    return cant;
+}
+
+$(function () {
+    var programs = getPrograms();
+    var labels = [];
+    var projects = [];
+    var finished = [];
+    var i = 0;
+    $.each(programs, function () {
+        labels[i] = this.nombre;
+        projects[i] = getProjects(this.idprograma);
+        finished[i] = getProjects(this.idprograma, 'terminado');
+        i++;
+    });
+
+    var areaChartData = {
+        labels  : labels,
+        datasets: [
+            {
+                label: 'Total Proyectos',
+                backgroundColor: 'rgba(60,141,188,0.9)',
+                borderColor: 'rgba(60,141,188,0.8)',
+                pointRadius: false,
+                pointColor: '#3b8bba',
+                pointStrokeColor: 'rgba(60,141,188,1)',
+                pointHighlightFill: '#fff',
+                pointHighlightStroke: 'rgba(60,141,188,1)',
+                data: projects
+            },
+            {
+                label: 'Terminados',
+                backgroundColor: 'rgba(210, 214, 222, 1)',
+                borderColor: 'rgba(210, 214, 222, 1)',
+                pointRadius: false,
+                pointColor: 'rgba(210, 214, 222, 1)',
+                pointStrokeColor: '#c1c7d1',
+                pointHighlightFill: '#fff',
+                pointHighlightStroke: 'rgba(220,220,220,1)',
+                data: finished
+            }
+        ]
+    }
+
+    var barChartCanvas = $('#barChart').get(0).getContext('2d')
+    var barChartData = $.extend(true, {}, areaChartData)
+    var temp0 = areaChartData.datasets[0]
+    var temp1 = areaChartData.datasets[1]
+    barChartData.datasets[0] = temp1
+    barChartData.datasets[1] = temp0
+
+    var barChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        datasetFill: false
+    }
+
+    new Chart(barChartCanvas, {
+        type: 'bar',
+        data: barChartData,
+        options: barChartOptions
+    })
+})
