@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Mevidencia extends CI_Model
+class Mevidencia extends Model
 {
     public function __construct($datos = array())
     {

@@ -10,6 +10,23 @@ class Mactividad extends Model
         parent::__construct($datos);
     }
 
+
+	public function consultarMisActividades($id)
+	{
+		try {
+			$query = $this->db->select("ac.*,ev.idevidencia,ev.observaciones,ev.estado")
+				->from($this->tabla . " ac")
+				->join("evidencia ev", "ac.idactividad = ev.actividad_idactividad", "left")
+				->where('ac.responsable', $id)
+				->get();
+			return $query->result();
+		} catch (\Throwable $th) {
+			return $th;
+		}
+	}
+
+
+
     public function consultarInscribir($id)
     {
         try {

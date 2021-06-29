@@ -12,6 +12,7 @@ class Cactividad extends CI_Controller
 		$this->load->model('Mindicador');
 		$this->load->model('Mactividad');
 		$this->load->model('Mparticipante');
+		$this->load->model('Mevidencia');
 	}
 
     public function index()
@@ -77,13 +78,13 @@ class Cactividad extends CI_Controller
 		$data = array();
         // Nombre de la Página actual
 		$data['modulo'] = 'modulo_mis_actividades';
-        $data['name'] = 'actividad';
+        $data['name'] = 'Mis Actividades';
         // data de la empresa
 		$data['empresa'] = 'PROJECT MANAGER';
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
-		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cactividad/filtro_responsable">Actividades</a></li>';
+		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cactividad/filtro_responsable">Mis Actividades</a></li>';
 
 		$data['css'] = array(
             'js/alertifyjs/css/alertify.rtl.css',
@@ -137,7 +138,7 @@ class Cactividad extends CI_Controller
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
-		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cactividad/inscribirse">Actividades</a></li>';
+		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cactividad/inscribirse">Inscribirse</a></li>';
 
 		$data['css'] = array(
             'js/alertifyjs/css/alertify.rtl.css',
@@ -191,7 +192,7 @@ class Cactividad extends CI_Controller
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
-		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cactividad/participando">Actividades</a></li>';
+		$data['ruta'] = '<li class="breadcrumb-item"><a href="' . base_url() . 'Cinicio">Inicio</a></li><li class="breadcrumb-item active"><a href="' . base_url() . 'Cactividad/participando">Participando</a></li>';
 
 		$data['css'] = array(
             'js/alertifyjs/css/alertify.rtl.css',
@@ -251,11 +252,11 @@ class Cactividad extends CI_Controller
 		}
 	}
 
-	public function consultarMisIndicadores()
+	public function consultarMisActividades()
 	{
 		$id = $this->session->userdata('idusuario');
 		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mactividad->consultarMis($id));
+			echo json_encode($this->Mactividad->consultarMisActividades($id));
 		}
 	}
 
@@ -380,4 +381,19 @@ class Cactividad extends CI_Controller
 		$this->Cindicador->ValidarEstados($activity->get('indicador_idindicador'));
 		return $data;
 	}
+
+	
+
+	public function guardarEvidencia()
+	{
+		$id  = $_POST['idevidencia'];
+		$_POST['fecha'] = date("Y-m-d");
+		unset($_POST['idevidencia']);
+		$evidencia = new $this->Mevidencia($_POST);
+		$evidencia->setId($id);
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($evidencia->guardar());
+		}
+	}
+
 }
