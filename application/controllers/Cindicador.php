@@ -154,6 +154,7 @@ class Cindicador extends CI_Controller
 			'js/alertifyjs/alertify.js',
 			'chart.js/Chart.min.js',
 			'js/indicador/Barrasindicador.js',
+			'js/indicador/Stackedindicador.js',
         );
 
 		$this->load->view('pages/head', $data);
@@ -163,6 +164,13 @@ class Cindicador extends CI_Controller
 		$this->load->view('indicador/Barrasindicador');
 		$this->load->view('pages/footer');
 		$this->load->view('pages/script');
+    }
+
+	public function getCumplimiento()
+	{
+        if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mindicador->consultarCumplimiento());
+		}
     }
 
 	public function consultarPro()

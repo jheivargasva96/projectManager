@@ -28,4 +28,17 @@ class Mproyecto extends Model
         $query = $this->db->get()->row();
         return $query->cant;
     }
+
+    public function consultarCumplimiento()
+    {
+        try {
+            
+            $this->db->select('cumplimiento');
+            $query = $this->db->get($this->tabla);
+            return $query->result();
+        } catch (\Throwable $th) {
+            return false;
+        }
+
+    }
 }

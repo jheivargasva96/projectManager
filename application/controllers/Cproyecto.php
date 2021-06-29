@@ -153,6 +153,7 @@ class Cproyecto extends CI_Controller
 			'js/alertifyjs/alertify.js',
 			'chart.js/Chart.min.js',
 			'js/proyecto/Barrasproyecto.js',
+			'js/proyecto/Stackedproyecto.js',
         );
 
 		$this->load->view('pages/head', $data);
@@ -164,13 +165,20 @@ class Cproyecto extends CI_Controller
 		$this->load->view('pages/script');
     }
 
+	public function getCumplimiento()
+	{
+        if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mproyecto->consultarCumplimiento());
+		}
+    }
+
 	public function consultarTodos()
 	{
 		if ($this->input->is_ajax_request()) {
 			echo json_encode($this->Mproyecto->consultarTodos());
 		}
 	}
-
+ 
 	public function consultarProyectos()
 	{
 		if ($this->input->is_ajax_request()) {
@@ -266,5 +274,5 @@ class Cproyecto extends CI_Controller
 		$project->set('estado', $state);
 		$project->set('cumplimiento', $percentage);
 		return $project->guardar();
-	}
+	} 
 }

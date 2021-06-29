@@ -122,7 +122,7 @@ function sendData() {
 function dataLoad() {
     $.ajax({
         url: base_url() + controlador + "/consultarTodos",
-        type: "POST",
+        type: "POST", 
         success: function (resultado) {
 
             try {

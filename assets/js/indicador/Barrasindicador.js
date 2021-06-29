@@ -65,7 +65,7 @@ $(function () {
       datasets: [
           {
               label: 'Total Actividades',
-              backgroundColor: 'rgba(230,126,34,0.7)',
+              backgroundColor: 'rgba(63,127,191,1)',
               borderColor: 'rgba(60,141,188,0.8)',
               pointRadius: false,
               pointColor: '#3b8bba',

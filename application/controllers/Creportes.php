@@ -46,4 +46,12 @@ class Creportes extends CI_Controller
 			echo json_encode($data);
 		}
     }
+
+    public function getCumplimiento()
+    {
+        $this->load->model('Mproyecto');
+        if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mproyecto->consultarCumplimiento());
+		}
+    }
 }

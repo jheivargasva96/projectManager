@@ -44,11 +44,19 @@ $(function () {
     var labels = [];
     var projects = [];
     var finished = [];
+    var pendiente = [];
+    var process = [];
+    var vencido = [];
+    var terminado = [];
     var i = 0;
     $.each(programs, function () {
         labels[i] = this.nombre;
         projects[i] = getProjects(this.idprograma);
         finished[i] = getProjects(this.idprograma, 'terminado');
+        pendiente[i] = getProjects(this.idprograma, 'pendiente');
+        process[i] = getProjects(this.idprograma, 'en proceso');
+        vencido[i] = getProjects(this.idprograma, 'vencido');
+        terminado[i] = getProjects(this.idprograma, 'terminado');
         i++;
     });
 
@@ -57,7 +65,7 @@ $(function () {
         datasets: [
             {
                 label: 'Total Proyectos',
-                backgroundColor: 'rgba(60,141,188,0.9)',
+                backgroundColor: 'rgba(63,127,191,1)',
                 borderColor: 'rgba(60,141,188,0.8)',
                 pointRadius: false,
                 pointColor: '#3b8bba',
@@ -68,7 +76,7 @@ $(function () {
             },
             {
                 label: 'Terminados',
-                backgroundColor: 'rgba(210, 214, 222, 1)',
+                backgroundColor: 'rgba(34, 153, 84, 0.7)',
                 borderColor: 'rgba(210, 214, 222, 1)',
                 pointRadius: false,
                 pointColor: 'rgba(210, 214, 222, 1)',
@@ -76,6 +84,50 @@ $(function () {
                 pointHighlightFill: '#fff',
                 pointHighlightStroke: 'rgba(220,220,220,1)',
                 data: finished
+            },
+            {
+                label: 'En Proceso',
+                backgroundColor: 'rgba(28, 160, 155, 1)',
+                borderColor: 'rgba(210, 214, 222, 1)',
+                pointRadius: false,
+                pointColor: 'rgba(210, 214, 222, 1)',
+                pointStrokeColor: '#c1c7d1',
+                pointHighlightFill: '#fff',
+                pointHighlightStroke: 'rgba(220,220,220,1)',
+                data:  process
+            },
+            {
+                label: 'Pendiente',
+                backgroundColor: 'rgba(244, 208, 63, 0.7)',
+                borderColor: 'rgba(210, 214, 222, 1)',
+                pointRadius: false,
+                pointColor: 'rgba(210, 214, 222, 1)',
+                pointStrokeColor: '#c1c7d1',
+                pointHighlightFill: '#fff',
+                pointHighlightStroke: 'rgba(220,220,220,1)',
+                data:  pendiente
+            },
+            {
+                label: 'Vencido',
+                backgroundColor: 'rgba(192, 57, 43, 1)',
+                borderColor: 'rgba(210, 214, 222, 1)',
+                pointRadius: false,
+                pointColor: 'rgba(210, 214, 222, 1)',
+                pointStrokeColor: '#c1c7d1',
+                pointHighlightFill: '#fff',
+                pointHighlightStroke: 'rgba(220,220,220,1)',
+                data:  vencido
+            },
+            {
+                label: 'Terminado con retraso',
+                backgroundColor: 'rgba(150, 37, 135, 1)',
+                borderColor: 'rgba(210, 214, 222, 1)',
+                pointRadius: false,
+                pointColor: 'rgba(210, 214, 222, 1)',
+                pointStrokeColor: '#c1c7d1',
+                pointHighlightFill: '#fff',
+                pointHighlightStroke: 'rgba(220,220,220,1)',
+                data:  terminado
             }
         ]
     }
