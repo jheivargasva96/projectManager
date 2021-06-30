@@ -25,4 +25,18 @@ class Mparticipante extends Model
         }
         return $dato;
     }
+
+    public function obtenerInscritos($id)
+	{
+		try {
+			$query = $this->db->select("p.idparticipante,p.actividad_idactividad,u.nombres,u.apellidos,p.estado")
+				->from($this->tabla . " p")
+				->join("usuario u", "p.usuario_idusuario = u.idusuario", "left")
+                ->where('p.actividad_idactividad', $id)
+				->get();
+			return $query->result();
+		} catch (\Throwable $th) {
+			return $th;
+		}
+	}
 }

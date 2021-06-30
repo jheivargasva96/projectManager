@@ -33,7 +33,7 @@ class Mactividad extends Model
             $query = $this->db->select("ac.idactividad,ac.descripcion,ac.nombre,ac.fecha,ac.lugar,ac.indicador_idindicador,p.usuario_idusuario,ac.responsable")
                 ->from($this->tabla . " ac")
                 ->join("indicador i", "ac.indicador_idindicador = i.idindicador", "left")
-                ->join("(select * from participante where usuario_idusuario = $id) p", "idactividad = p.actividad_idactividad", "left")
+                ->join("(select * from participante where usuario_idusuario = 6) p", "idactividad = p.actividad_idactividad", "left")
                 ->where('idparticipante is  null')
                 ->where('i.estado', 'activo')
                 ->order_by('ac.nombre', 'ASC')
@@ -200,4 +200,5 @@ class Mactividad extends Model
         $query = $this->db->get()->row();
         return $query->cant;
     }
+
 }

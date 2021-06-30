@@ -396,4 +396,23 @@ class Cactividad extends CI_Controller
 		}
 	}
 
+	public function obtenerInscritos()
+	{
+		$id  = $_POST['id'];
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mparticipante->obtenerInscritos($id));
+		}
+	}
+
+	public function EstadoAprobar()
+	{
+		$id = $_POST['id'];
+		$estado = $_POST['estado'];
+		$this->Mparticipante->consultar($id);
+		$this->Mparticipante->set('estado', $estado);
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mparticipante->guardar());
+		}
+	}
+
 }

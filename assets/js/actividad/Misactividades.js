@@ -60,10 +60,67 @@ var DataTable = $('#dataTable').DataTable({
             modalAnexo(data[0],data[9],data[10],data[11]);
             console.log(data[0],data[9]);
         });
+
+        $(row).on("click", ".modalAprobar", function (e) {
+            e.preventDefault();
+           
+            modalAprobacion(data[0]);
+        });
+
     }
 });
 
 dataLoad();
+
+var dtTblAprobacion = $('#TblAprobacion').DataTable({
+    language: {
+        url: base_url() + 'assets/js/español.json'
+    },
+	processing: true,
+	pageLength: 5,
+	bLengthChange: false,
+	columnDefs: [
+	{ width: '1%', 
+      targets: [0,1,2],
+      className :"text-center"
+    },
+    
+    
+	//{visible: false, targets: [0, 1]}
+	],
+	dom: 'Bfrtip',
+	buttons: [
+	{ extend: 'excel', className: 'excelButton', text: 'Excel' , exportOptions:{columns: [0,1,2]}},
+	{ extend: 'pdf', className: 'pdfButton', tex: 'PDF' , exportOptions:{columns: [0,1,2]}},
+	{ extend: 'print', className: 'printButton', text: 'Imprimir' , exportOptions:{columns: [0,1,2]}}
+	],
+	createdRow: function(row, data, dataIndex){
+		$(row).on("click", ".eliminarParticipar", function(e){
+			e.preventDefault();
+			deleteData(data[3],data[4]);
+		});
+
+        $(row).on("click", ".aprobarParticipar", function(e){
+			e.preventDefault();
+			saveStateAprobar(data[3],data[4]);
+		});
+	}
+});
+$("[id=TblAprobacion] thead").addClass("thTDocs");
+$("[id=TblAprobacion]").DataTable();
+$("[id=TblAprobacion] tbody").addClass("tdTDocs");
+
+
+function modalAprobacion(id) {
+    
+    $("#ModalAprobacion").modal({
+        backdrop: 'static',
+        keyboard: true,
+        show: true
+    });
+    obtenerAprobaciones(id);
+}
+
 
 
 function modalAnexo(id,idevid,observaciones,estado) {
@@ -142,6 +199,7 @@ function dataLoad() {
                 var filas = [];
                 $.each(data, function () {
 
+                    let aprobacion = '<button class="modalAprobar btn btn-warning btn-xs"  title="Abrobar Participantes"><span class="fab fa-adn"></span></button>';
                     let anexo = '<button class="modalAnexo btn btn-info btn-xs" value"'+this.idevidencia+'" title="Anexo"><span class="fas fa-upload"></span></button>';
 
                     var stateEdit = '';
@@ -170,7 +228,7 @@ function dataLoad() {
                     
 
                     if (action) {
-                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + ' ' + anexo + '</center>';
+                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + ' ' + anexo + ' ' + aprobacion +'</center>';
                     }
                     fila[9] = this.idevidencia;
                     fila[10] = this.observaciones;
@@ -552,4 +610,100 @@ function eliminarAnexo(id) {
         }
     });
     return nombre;
+}
+
+function obtenerAprobaciones(id) {
+
+    $.ajax({
+        type: "POST",
+        url: base_url() + controlador + "/obtenerInscritos",
+        data: {
+            'id': id
+        },
+        success: function (resultado) {
+            try {
+                var datos = JSON.parse(resultado);
+                filas  =[];
+                $.each(datos, function(){
+                    let aprobar = '';
+                    eliminar = '<button class="btn eliminarParticipar btn-xs btn-danger"><span class="fas fa-sm fa-times"></span></button>';
+                    if(this.estado != 'activo'){
+                        aprobar = '<button class="btn aprobarParticipar btn-xs btn-success"><span class="fas fa-sm fa-check"></span></button>';
+                    }
+                   
+                    var fila = {
+                        0: this.nombres + ' ' + this.apellidos,
+                        1: this.estado,
+                        2: eliminar + ' ' + aprobar,
+                        3: this.idparticipante,
+                        4: this.actividad_idactividad
+                    }
+                    filas.push(fila);
+                });
+                dtTblAprobacion.clear().draw();
+                dtTblAprobacion.rows.add(filas).draw();
+            } catch (e) {
+                alertify.error('¡Error! Los datos no han podido ser procesados (JSON.parse-Error)');
+                console.log(e);
+            }
+        },
+        error: function (error) {
+            alertify.alert('Error', error.responseText);
+        }
+    });
+
+}
+
+function deleteData(id,actividad_idactividad) {
+    nombrep = '';
+    $.ajax({
+        async: false,
+        type: "POST",
+        url: base_url() + controlador + "/delete",
+        data: {
+            'id': id
+        },
+        success: function (resultado) {
+            var data = JSON.parse(resultado);
+
+            if (data.success == true) {
+                alertify.success("Participante retirado!");
+               obtenerAprobaciones(actividad_idactividad);
+            } else {
+                alertify.error('¡Error!, No se ha podido realizar la acción, comuniquese con el adminsitrador del sistema.');
+               obtenerAprobaciones(actividad_idactividad);
+                return false;
+            }
+        },
+        error: function (error) {
+            alertify.error('Ocurrio un Error');
+            return false;
+        }
+    });
+    return nombrep;
+}
+
+function saveStateAprobar(id,actividad_idactividad) {
+    $.ajax({
+        url: base_url() + controlador + "/EstadoAprobar",
+        type: "POST",
+        data: {
+            'estado': 'activo',
+            'id': id
+        },
+        success: function (resultado) {
+            var data = JSON.parse(resultado);
+            if (data.success == true) {
+                alertify.success("Estado actualizado correctamente.");
+                obtenerAprobaciones(actividad_idactividad);
+            } else {
+                alertify.error('¡Error!, No se pudo actualizar, comuniquese con el adminsitrador del sistema.');
+                return false;
+            }
+        },
+        error: function (error) {
+            alertify.error('¡Error!, No se pudo actualizar, comuniquese con el adminsitrador del sistema.');
+            return false;
+        }
+    });
 }

@@ -137,7 +137,6 @@ function sendData(id) {
         data: {
             'idparticipante'        : 0,
             'actividad_idactividad' : id,
-            'estado'                : 1
         },
         success: function (resultado) {
             var data = JSON.parse(resultado);
