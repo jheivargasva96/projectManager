@@ -16,8 +16,13 @@ class Mevidencia extends Model
             $this->db->where('actividad_idactividad', $parent);
             $this->db->order_by('idevidencia', 'DESC');
             $query = $this->db->get($this->tabla)->row();
-            $this->campos = (array) $query;
-            return $query->estado;
+            $state = 'pendiente';
+            if ($query) {
+                $this->campos = (array) $query;
+                $state = $query->estado;
+                
+            }
+            return $state;
         } catch (\Throwable $th) {
             return false;
         }

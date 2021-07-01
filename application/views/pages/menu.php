@@ -18,7 +18,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" id="menu">
                 <li class="nav-item">
-                    <a href="<?= base_url() ?>Cinicio" class="nav-link">
+                    <a href="<?= base_url() ?>Cinicio" class="nav-link" id="inicio">
                         <i class="nav-icon fas fa-home"></i>
                         <p>Inicio</p>
                     </a>

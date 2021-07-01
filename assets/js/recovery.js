@@ -48,7 +48,9 @@ function sendDataRecovery() {
             var data = JSON.parse(resultado);
             if (data.success == true) {
                 alertify.success(data.message);
-                window.location.href = base_url() + 'Clogin';
+                setTimeout(function(){
+                    window.location.href = base_url() + 'Clogin';
+                }, 1000);
             } else {
                 alertify.error(data.message);
             }

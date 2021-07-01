@@ -40,31 +40,48 @@ function getProjects(idprogram, state = '') {
 }
 
 $(function () {
-    var programs = getPrograms();
-    var labels = [];
-    var projects = [];
-    var finished = [];
-    var pendiente = [];
-    var process = [];
-    var vencido = [];
-    var terminado = [];
+    // Obtener lista de programas de la db
+    var ProgramList = getPrograms();
+    // Los nombres de los programas van a ser los sectores del eje x
+    var Programs = [];
+    // La cantidad total de proyectos por programa será la primera barra de cada sector
+    var TotalProjects = [];
+    // Los proyectos terminados segunda barra
+    var Finished = [];
+    // Los proyectos pendientes tercera barra
+    var Pending = [];
+    // Proyectos en proceso cuarta barra
+    var Process = [];
+    // Proyectos vencidos quinta barra
+    var Expire = [];
+    // Proyectos con retraso sexta barra
+    var Late = [];
+
     var i = 0;
-    $.each(programs, function () {
-        labels[i] = this.nombre;
-        projects[i] = getProjects(this.idprograma);
-        finished[i] = getProjects(this.idprograma, 'terminado');
-        pendiente[i] = getProjects(this.idprograma, 'pendiente');
-        process[i] = getProjects(this.idprograma, 'en proceso');
-        vencido[i] = getProjects(this.idprograma, 'vencido');
-        terminado[i] = getProjects(this.idprograma, 'terminado');
+    $.each(ProgramList, function () {
+        // Nombre del programa
+        Programs[i] = this.nombre;
+        // Total de proyectos
+        TotalProjects[i] = getProjects(this.idprograma);
+        // Proyectos terminados
+        Finished[i] = getProjects(this.idprograma, 'terminado');
+        // Proyectos pendientes
+        Pending[i] = getProjects(this.idprograma, 'pendiente');
+        // Proyectos en proceso
+        Process[i] = getProjects(this.idprograma, 'en proceso');
+        // Proyectos vencidos
+        Expire[i] = getProjects(this.idprograma, 'vencido');
+        // Proyectos con retraso
+        Late[i] = getProjects(this.idprograma, 'terminado con retraso');
         i++;
     });
+    console.log();
 
     var areaChartData = {
-        labels  : labels,
+        labels: Programs,
         datasets: [
             {
-                label: 'Total Proyectos',
+                label: 'Totales',
                 backgroundColor: 'rgba(63,127,191,1)',
                 borderColor: 'rgba(60,141,188,0.8)',
                 pointRadius: false,
@@ -72,7 +89,7 @@ $(function () {
                 pointStrokeColor: 'rgba(60,141,188,1)',
                 pointHighlightFill: '#fff',
                 pointHighlightStroke: 'rgba(60,141,188,1)',
-                data: projects
+                data: TotalProjects
             },
             {
                 label: 'Terminados',
@@ -83,7 +100,18 @@ $(function () {
                 pointStrokeColor: '#c1c7d1',
                 pointHighlightFill: '#fff',
                 pointHighlightStroke: 'rgba(220,220,220,1)',
-                data: finished
+                data: Finished
+            },
+            {
+                label: 'Pendientes',
+                backgroundColor: 'rgba(244, 208, 63, 0.7)',
+                borderColor: 'rgba(210, 214, 222, 1)',
+                pointRadius: false,
+                pointColor: 'rgba(210, 214, 222, 1)',
+                pointStrokeColor: '#c1c7d1',
+                pointHighlightFill: '#fff',
+                pointHighlightStroke: 'rgba(220,220,220,1)',
+                data: Pending
             },
             {
                 label: 'En Proceso',
@@ -94,21 +122,10 @@ $(function () {
                 pointStrokeColor: '#c1c7d1',
                 pointHighlightFill: '#fff',
                 pointHighlightStroke: 'rgba(220,220,220,1)',
-                data:  process
+                data: Process
             },
             {
-                label: 'Pendiente',
-                backgroundColor: 'rgba(244, 208, 63, 0.7)',
-                borderColor: 'rgba(210, 214, 222, 1)',
-                pointRadius: false,
-                pointColor: 'rgba(210, 214, 222, 1)',
-                pointStrokeColor: '#c1c7d1',
-                pointHighlightFill: '#fff',
-                pointHighlightStroke: 'rgba(220,220,220,1)',
-                data:  pendiente
-            },
-            {
-                label: 'Vencido',
+                label: 'Vencidos',
                 backgroundColor: 'rgba(192, 57, 43, 1)',
                 borderColor: 'rgba(210, 214, 222, 1)',
                 pointRadius: false,
@@ -116,7 +133,7 @@ $(function () {
                 pointStrokeColor: '#c1c7d1',
                 pointHighlightFill: '#fff',
                 pointHighlightStroke: 'rgba(220,220,220,1)',
-                data:  vencido
+                data: Expire
             },
             {
                 label: 'Terminado con retraso',
@@ -127,11 +144,12 @@ $(function () {
                 pointStrokeColor: '#c1c7d1',
                 pointHighlightFill: '#fff',
                 pointHighlightStroke: 'rgba(220,220,220,1)',
-                data:  terminado
+                data: Late
             }
         ]
     }
 
+    // Configuraciones libreria de graficos
     var barChartCanvas = $('#barChart').get(0).getContext('2d')
     var barChartData = $.extend(true, {}, areaChartData)
     var temp0 = areaChartData.datasets[0]

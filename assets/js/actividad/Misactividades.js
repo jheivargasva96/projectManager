@@ -1,10 +1,12 @@
 table = 'actividad';
 controlador = 'Cactividad';
-fields = ['nombre', 'descripcion','responsable','fecha', 'lugar','indicador_idindicador', 'estado'];
+fields = ['nombre', 'descripcion', 'responsable', 'fecha', 'lugar', 'indicador_idindicador', 'estado'];
 inactiveFields = [];
 action = true;
 title = 'Actualizar actividad';
 button = 'Editar'
+
+Anexos = [];
 
 alertify.set('notifier', 'position', 'top-right');
 
@@ -20,7 +22,7 @@ var DataTable = $('#dataTable').DataTable({
     autoWidth: false,
     // responsive: true,
     processing: true,
-    scrollX:true,
+    scrollX: true,
     pageLength: 10,
     columnDefs: [
         {
@@ -40,71 +42,181 @@ var DataTable = $('#dataTable').DataTable({
 
             var state = $(this).closest("tr").find("td:last .stateEdit").attr("value");
 
-            if (state == 'activo') {
-                state = 'inactivo';
-            } else {
+            if (state == 'inactivo') {
                 state = 'activo';
+            } else {
+                state = 'inactivo';
             }
 
             saveState(state, data[0]);
         });
 
-        $(row).on("click", ".editData", function (e) {
-            e.preventDefault();
-            editData(data[0]);
-        });
-
         $(row).on("click", ".modalAnexo", function (e) {
             e.preventDefault();
-           
-            modalAnexo(data[0],data[9],data[10],data[11]);
-            console.log(data[0],data[9]);
+            modalAnexo(data[0], data[9], data[10], data[11]);
         });
 
         $(row).on("click", ".modalAprobar", function (e) {
             e.preventDefault();
-           
+
             modalAprobacion(data[0]);
         });
 
+        $(row).on("click", ".verEvidencias", function (e) {
+            e.preventDefault();
+            verEvidencias(data[0]);
+        });
     }
 });
 
+function verEvidencias(idactividad) {
+    $("#Modal .modal-content").load(base_url() + controlador + '/ModalListaEvidencias', function () {
+        $("#Modal").modal({
+            backdrop: 'static',
+            keyboard: true,
+            show: true
+        });
+
+        // $("[name=fecha]").val(actualDate());
+        // $("#actividad_idactividad").val(idactividad);
+        // Anexos = [];
+
+        // // Inicializar la tabla
+        // var dtTblAnexoActividad = $('#TblAnexoActividad').DataTable({
+        //     language: {
+        //         url: base_url() + 'assets/js/español.json'
+        //     },
+        //     processing: true,
+        //     pageLength: 5,
+        //     bLengthChange: false,
+        //     columnDefs: [
+        //         {
+        //             width: '1%',
+        //             targets: [0, 2, 3],
+        //             className: "text-center"
+
+        //         },
+        //     ],
+        //     dom: '',
+        //     createdRow: function (row, data, dataIndex) {
+        //         $(row).on("click", ".eliminarAnexo", function (e) {
+        //             e.preventDefault();
+        //             var id = $(this).val();
+        //             eliminarAnexo(id);
+        //             Anexos.splice($(this).val(), 1);
+        //             getAnexosForList(dtTblAnexoActividad);
+        //         });
+        //     }
+        // });
+
+        // // Funciones nuevos anexos
+        // $("[id=CrearAnexoActividad]").on("click", function (e) {
+        //     e.preventDefault();
+        //     $(this).attr('disabled', true);
+        //     var row = {
+        //         0: '<input type="file"  name="Lista_Anexos[]" id="anexosDoc"  class="anexarArchivos" accept="application/msword, application/vnd.ms-excel, text/plain, application/pdf, image/*, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">',
+        //         1: '',
+        //         2: '',
+        //         3: "<center><button type='button' class='btnGuardarAN btn btn-primary btn-xs' title='Guardar' style='margin-right:5px'><span class='fas fa-save'></span></button><button type='button' class='btn btn-danger btn-xs LimpiarAN' title='Eliminar'><span class='fas fa-sm fa-times'></span></button></center>"
+        //     }
+        //     dtTblAnexoActividad.row.add(row).draw();
+        // });
+
+        // $("[id=TblAnexoActividad]").on("click", ".LimpiarAN", function (e) {
+        //     e.preventDefault();
+        //     dtTblAnexoActividad.row($(this).closest('tr')).remove().draw();
+        //     $("#CrearAnexoActividad").attr('disabled', false);
+        // });
+
+        // $("[id=TblAnexoActividad]").on("click", ".btnGuardarAN", function (e) {
+        //     e.preventDefault();
+        //     if (typeof FormData !== 'undefined') {
+        //         var form_data = new FormData();
+        //         form_data.append('Lista_Anexos', $("[id=anexosDoc]")[0].files[0]);
+        //         $.ajax({
+        //             url: base_url() + controlador + "/guardarAnexos",
+        //             type: "POST",
+        //             data: form_data,
+        //             async: false,
+        //             cache: false,
+        //             contentType: false,
+        //             processData: false,
+        //             success: function (resultado) {
+        //                 var data = JSON.parse(resultado);
+        //                 if (data.success) {
+        //                     alertify.success('Anexo guardado');
+        //                     Anexos.push(data.message);
+        //                     getAnexosForList(dtTblAnexoActividad);
+        //                 } else {
+        //                     alertify.error(data.message);
+        //                 }
+        //             },
+        //             error: function (error) {
+        //                 alertify.alert('Error', error.responseText);
+        //                 console.log(error);
+        //             }
+        //         });
+        //     }
+        // });
+
+        // $("form").on('submit', function (e) {
+        //     e.preventDefault();
+        //     sendData();
+        // });
+    });
+}
+
 dataLoad();
+
+// Funcion para obtener la fecha actual
+function actualDate() {
+    var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 
 var dtTblAprobacion = $('#TblAprobacion').DataTable({
     language: {
         url: base_url() + 'assets/js/español.json'
     },
-	processing: true,
-	pageLength: 5,
-	bLengthChange: false,
-	columnDefs: [
-	{ width: '1%', 
-      targets: [0,1,2],
-      className :"text-center"
-    },
-    
-    
-	//{visible: false, targets: [0, 1]}
-	],
-	dom: 'Bfrtip',
-	buttons: [
-	{ extend: 'excel', className: 'excelButton', text: 'Excel' , exportOptions:{columns: [0,1,2]}},
-	{ extend: 'pdf', className: 'pdfButton', tex: 'PDF' , exportOptions:{columns: [0,1,2]}},
-	{ extend: 'print', className: 'printButton', text: 'Imprimir' , exportOptions:{columns: [0,1,2]}}
-	],
-	createdRow: function(row, data, dataIndex){
-		$(row).on("click", ".eliminarParticipar", function(e){
-			e.preventDefault();
-			deleteData(data[3],data[4]);
-		});
+    processing: true,
+    pageLength: 5,
+    bLengthChange: false,
+    columnDefs: [
+        {
+            width: '1%',
+            targets: [0, 1, 2],
+            className: "text-center"
+        },
 
-        $(row).on("click", ".aprobarParticipar", function(e){
-			e.preventDefault();
-			saveStateAprobar(data[3],data[4]);
-		});
-	}
+
+        //{visible: false, targets: [0, 1]}
+    ],
+    dom: 'Bfrtip',
+    buttons: [
+        { extend: 'excel', className: 'excelButton', text: 'Excel', exportOptions: { columns: [0, 1, 2] } },
+        { extend: 'pdf', className: 'pdfButton', tex: 'PDF', exportOptions: { columns: [0, 1, 2] } },
+        { extend: 'print', className: 'printButton', text: 'Imprimir', exportOptions: { columns: [0, 1, 2] } }
+    ],
+    createdRow: function (row, data, dataIndex) {
+        $(row).on("click", ".eliminarParticipar", function (e) {
+            e.preventDefault();
+            deleteData(data[3], data[4]);
+        });
+
+        $(row).on("click", ".aprobarParticipar", function (e) {
+            e.preventDefault();
+            saveStateAprobar(data[3], data[4]);
+        });
+    }
 });
 $("[id=TblAprobacion] thead").addClass("thTDocs");
 $("[id=TblAprobacion]").DataTable();
@@ -112,7 +224,6 @@ $("[id=TblAprobacion] tbody").addClass("tdTDocs");
 
 
 function modalAprobacion(id) {
-    
     $("#ModalAprobacion").modal({
         backdrop: 'static',
         keyboard: true,
@@ -121,56 +232,116 @@ function modalAprobacion(id) {
     obtenerAprobaciones(id);
 }
 
+function modalAnexo(idactividad, idevid, observaciones, estado) {
+    $("#Modal .modal-content").load(base_url() + controlador + '/ModalEvidencia', function () {
+        $("#Modal").modal({
+            backdrop: 'static',
+            keyboard: true,
+            show: true
+        });
 
+        $("[name=fecha]").val(actualDate());
+        $("#actividad_idactividad").val(idactividad);
+        Anexos = [];
 
-function modalAnexo(id,idevid,observaciones,estado) {
-    
-    $("#ModalAnexo").modal({
-        backdrop: 'static',
-        keyboard: true,
-        show: true
-    });
-    obtenerAnexoActividad(idevid);
-    idactividad = id;
-    idevidencia = idevid;
-    $('[name="actividad_idactividad"]').val(idactividad);
-    $('[name="observaciones"]').val(observaciones);
-    $('[name="estado"]').val(estado);
-   
-    $('[name="idevidencia"]').val(idevid);
-    
-    $("form").on('submit', function (e) {
-        e.preventDefault();
-        sendData();
+        // Inicializar la tabla
+        var dtTblAnexoActividad = $('#TblAnexoActividad').DataTable({
+            language: {
+                url: base_url() + 'assets/js/español.json'
+            },
+            processing: true,
+            pageLength: 5,
+            bLengthChange: false,
+            columnDefs: [
+                {
+                    width: '1%',
+                    targets: [0, 2, 3],
+                    className: "text-center"
+
+                },
+            ],
+            dom: '',
+            createdRow: function (row, data, dataIndex) {
+                $(row).on("click", ".eliminarAnexo", function (e) {
+                    e.preventDefault();
+                    var id = $(this).val();
+                    eliminarAnexo(id);
+                    Anexos.splice($(this).val(), 1);
+                    getAnexosForList(dtTblAnexoActividad);
+                });
+            }
+        });
+
+        // Funciones nuevos anexos
+        $("[id=CrearAnexoActividad]").on("click", function (e) {
+            e.preventDefault();
+            $(this).attr('disabled', true);
+            var row = {
+                0: '<input type="file"  name="Lista_Anexos[]" id="anexosDoc"  class="anexarArchivos" accept="application/msword, application/vnd.ms-excel, text/plain, application/pdf, image/*, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">',
+                1: '',
+                2: '',
+                3: "<center><button type='button' class='btnGuardarAN btn btn-primary btn-xs' title='Guardar' style='margin-right:5px'><span class='fas fa-save'></span></button><button type='button' class='btn btn-danger btn-xs LimpiarAN' title='Eliminar'><span class='fas fa-sm fa-times'></span></button></center>"
+            }
+            dtTblAnexoActividad.row.add(row).draw();
+        });
+
+        $("[id=TblAnexoActividad]").on("click", ".LimpiarAN", function (e) {
+            e.preventDefault();
+            dtTblAnexoActividad.row($(this).closest('tr')).remove().draw();
+            $("#CrearAnexoActividad").attr('disabled', false);
+        });
+
+        $("[id=TblAnexoActividad]").on("click", ".btnGuardarAN", function (e) {
+            e.preventDefault();
+            if (typeof FormData !== 'undefined') {
+                var form_data = new FormData();
+                form_data.append('Lista_Anexos', $("[id=anexosDoc]")[0].files[0]);
+                $.ajax({
+                    url: base_url() + controlador + "/guardarAnexos",
+                    type: "POST",
+                    data: form_data,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (resultado) {
+                        var data = JSON.parse(resultado);
+                        if (data.success) {
+                            alertify.success('Anexo guardado');
+                            Anexos.push(data.message);
+                            getAnexosForList(dtTblAnexoActividad);
+                        } else {
+                            alertify.error(data.message);
+                        }
+                    },
+                    error: function (error) {
+                        alertify.alert('Error', error.responseText);
+                        console.log(error);
+                    }
+                });
+            }
+        });
+
+        $("form").on('submit', function (e) {
+            e.preventDefault();
+            sendData();
+        });
     });
 }
 
-function sendData(id) {
-
+function sendData() {
     $.ajax({
         url: base_url() + controlador + '/guardarEvidencia',
         type: "POST",
-        data: $("#form").serialize(),
+        data: $("#form").serialize() + '&anexos=' + Anexos,
         success: function (resultado) {
             var data = JSON.parse(resultado);
-            console.log('data',data.message);
-
             if (data.success == true) {
-               
-                if(data.message != 'Dato actualizado!'){
-                    idevidencia = data.message;
-                    $('[name="idevidencia"]').val(data.message);
-                }
-                if(id  != 1){
-                    alertify.success("Guardado!");
-                    $('#ModalAnexo').modal('toggle');
-                    dataLoad();
-                }
-                
-
+                alertify.success("Guardado!");
+                $('#Modal').modal('toggle');
+                dataLoad();
             } else {
                 alertify.error('¡Error!, No se ha podido realizar la acción, comuniquese con el adminsitrador del sistema.');
-                dataLoad();
                 return false;
             }
         },
@@ -200,19 +371,20 @@ function dataLoad() {
                 $.each(data, function () {
 
                     let aprobacion = '<button class="modalAprobar btn btn-warning btn-xs"  title="Abrobar Participantes"><span class="fab fa-adn"></span></button>';
-                    let anexo = '<button class="modalAnexo btn btn-info btn-xs" value"'+this.idevidencia+'" title="Anexo"><span class="fas fa-upload"></span></button>';
+                    let anexo = '<button class="modalAnexo btn btn-info btn-xs" value"' + this.idactividad + '" title="Anexo"><span class="fas fa-upload"></span></button>';
+                    let evidencias = '<button class="verEvidencias btn btn-info btn-xs" value"' + this.idactividad + '" title="Evidencias"><span class="fas fa-eye"></span></button>';
 
                     var stateEdit = '';
 
                     if (fields.includes('estado')) {
-                        if (this.estado == 'activo') {
-                            stateEdit = '<button class="stateEdit btn btn-danger btn-xs" value="' + this.estado + '" title="Inactivar" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-times"></span></button>';
-                        } else {
+                        if (this.estado == 'inactivo') {
                             stateEdit = '<button class="stateEdit btn btn-success btn-xs" value="' + this.estado + '" title="Activar" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-check"></span></button>';
+                        } else {
+                            stateEdit = '<button class="stateEdit btn btn-danger btn-xs" value="' + this.estado + '" title="Inactivar" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-times"></span></button>';
                         }
                     }
 
-                   
+
                     var fila = {};
                     fila[0] = this['id' + table];
 
@@ -221,14 +393,14 @@ function dataLoad() {
                             fila[i + 1] = consultarResponsable(this[fields[i]]);
                         } else if (fields[i] == 'indicador_idindicador') {
                             fila[i + 1] = consultarIndicador(this[fields[i]]);
-                        }else{
+                        } else {
                             fila[i + 1] = this[fields[i]];
                         }
                     }
-                    
+
 
                     if (action) {
-                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + ' ' + anexo + ' ' + aprobacion +'</center>';
+                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + ' ' + anexo + ' ' + evidencias + ' ' + aprobacion + '</center>';
                     }
                     fila[9] = this.idevidencia;
                     fila[10] = this.observaciones;
@@ -385,7 +557,7 @@ function consultar(id) {
                         $('[name="' + key + '"] [value="' + valor + '"]').attr('selected', true);
                     } else {
                         $('[name="' + key + '"]').val(valor);
-                    }                    
+                    }
                 }
 
                 for (i = 0; i < inactiveFields.length; i++) {
@@ -402,104 +574,6 @@ function consultar(id) {
     });
 
 }
-
-var dtTblAnexoActividad = $('#TblAnexoActividad').DataTable({
-    language: {
-        url: base_url() + 'assets/js/español.json'
-    },
-	processing: true,
-	pageLength: 5,
-	bLengthChange: false,
-	columnDefs: [
-	{ width: '1%', 
-      targets: [0,2,3],
-      className :"text-center"
-        
-    },
-    
-    
-	//{visible: false, targets: [0, 1]}
-	],
-	dom: 'Bfrtip',
-	buttons: [
-	{ extend: 'excel', className: 'excelButton', text: 'Excel' , exportOptions:{columns: [0,1,2]}},
-	{ extend: 'pdf', className: 'pdfButton', tex: 'PDF' , exportOptions:{columns: [0,1,2]}},
-	{ extend: 'print', className: 'printButton', text: 'Imprimir' , exportOptions:{columns: [0,1,2]}}
-	],
-	createdRow: function(row, data, dataIndex){
-		$(row).on("click", ".eliminarAnexo", function(e){
-			e.preventDefault();
-			var id = $(this).closest('tr').find('td:eq(3) .eliminarAnexo').val();
-			eliminarAnexo(id)
-		});
-	}
-});
-$("[id=TblAnexoActividad] thead").addClass("thTDocs");
-$("[id=TblAnexoActividad]").DataTable();
-$("[id=TblAnexoActividad] tbody").addClass("tdTDocs");
-
-$("[id=CrearAnexoActividad]").on("click", function(e){
-	e.preventDefault();
-
-    if($('#observaciones').val() == ''){
-        alertify.error('Campo Observacion no puede estar vacio');
-        return;
-    }
-    sendData(1);
-
-	var row = {
-		0: '<input type="file"  name="Lista_Anexos[]" id="anexosDoc"  class="anexarArchivos" accept="application/msword, application/vnd.ms-excel, text/plain, application/pdf, image/*, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >',
-		1: '',
-		2: '',
-		3: "<center><button type='button' class='btnGuardarAN btn btn-primary btn-xs' title='Guardar' style='margin-right:5px'><span class='fas fa-save'></span></button><button type='button' class='btn btn-danger btn-xs LimpiarAN' title='Eliminar'><span class='fas fa-sm fa-times'></span></button></center>"
-	}
-	dtTblAnexoActividad.row.add(row).draw();
-	$(this).attr('disabled', true);
-});
-
-$("[id=TblAnexoActividad]").on("click", ".LimpiarAN", function(e){
-	e.preventDefault();
-	dtTblAnexoActividad.row( $(this).closest('tr') ).remove().draw();
-	$("#CrearAnexoActividad").attr('disabled', false);
-});
-
-$("[id=TblAnexoActividad]").on("click", ".btnGuardarAN", function(e){
-	e.preventDefault();
-	var tipo = $(this).closest("[id=TblAnexoActividad]").attr("data-tipo");
-	var codigo = $('#idevidencia').val();
-	if (typeof FormData !== 'undefined') {
-		var form_data = new FormData();
-		form_data.append('Lista_Anexos', $("[id=anexosDoc]")[0].files[0]);
-		form_data.append('codigo', codigo);
-		$.ajax({
-            url: base_url() + controlador + "/guardarAnexosVehiculo",
-			type: "POST",
-			data: form_data,
-			async	: false,
-			cache	: false,
-			contentType : false,
-			processData : false,
-			success: function(resultado){
-				var resp = resultado;
-				if (resultado == 3) {
-					alertify.error("Archivo no valido, revisar el peso o caracteres especiales del archivo");
-					return false;
-				}else{
-					if (resultado != 0) {
-						alertify.success("Anexo Almacenado con éxito");
-						obtenerAnexoActividad(codigo);
-					}else{
-						alertify.error("!Error, no se pudieron guardar los anexos; comuniquese con el administrador del sistema");
-					}
-				}
-			},
-			error: function(error){
-				alertify.alert('Error', error.responseText);
-				console.log(error);
-			}
-		});
-	}
-});
 
 function consultarIndic(id) {
     $.ajax({
@@ -518,7 +592,7 @@ function consultarIndic(id) {
                         $('[name="' + key + '"] [value="' + valor + '"]').attr('selected', true);
                     } else {
                         $('[name="' + key + '"]').val(valor);
-                    }                    
+                    }
                 }
 
                 for (i = 0; i < inactiveFields.length; i++) {
@@ -535,8 +609,60 @@ function consultarIndic(id) {
     });
 }
 
-function obtenerAnexoActividad(id) {
+function getAnexosForList(dtTblAnexoActividad) {
+    $.ajax({
+        type: "POST",
+        url: base_url() + controlador + "/getAnexosForList",
+        data: {
+            'anexos': Anexos
+        },
+        success: function (resultado) {
+            try {
+                var datos = JSON.parse(resultado);
+                filas = [];
+                $.each(datos, function () {
+                    var ruta = this.ruta.split('/');
+                    var cant = ruta.length;
+                    var tipoDoc = ruta[cant - 1].split('.');
+                    var enlace = "";
+                    var rutaDoc = base_url() + 'uploads/anexoActividad/' + ruta[cant - 1];
+                    var eliminar = "";
+                    if (tipoDoc[1] == "doc") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-file-word-o"></i></a>';
+                    } else if (tipoDoc[1] == "xls" || tipoDoc[1] == "xlsx") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-success btn-xs"><i class="fas fa-file-excel"></i></a>';
+                    } else if (tipoDoc[1] == "pdf") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-danger btn-xs"><i class="fas fa-file-pdf"></i></a>';
+                    } else if (tipoDoc[1] == "txt") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-warning btn-xs"><i class="fas fa-file-alt"></i></a>';
+                    } else {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-image"></i></a>';
+                    }
+                    eliminar = '<button class="btn eliminarAnexo btn-xs btn-danger" value="' + this.idanexo + '"><span class="fas fa-sm fa-times"></span></button>';
+                    var fila = {
+                        0: tipoDoc[1].toUpperCase(),
+                        1: this.documento,
+                        2: enlace,
+                        3: eliminar
+                    }
+                    filas.push(fila);
+                });
+                console.log(filas);
+                dtTblAnexoActividad.clear().draw();
+                dtTblAnexoActividad.rows.add(filas).draw();
+                $("#CrearAnexoActividad").attr('disabled', false);
+            } catch (e) {
+                alertify.error('¡Error! Los datos no han podido ser procesados (JSON.parse-Error)');
+                console.log(e);
+            }
+        },
+        error: function (error) {
+            alertify.alert('Error', error.responseText);
+        }
+    });
+}
 
+function obtenerAnexoActividad(id) {
     $.ajax({
         type: "POST",
         url: base_url() + controlador + "/obtenerAnexoActividad",
@@ -546,26 +672,26 @@ function obtenerAnexoActividad(id) {
         success: function (resultado) {
             try {
                 var datos = JSON.parse(resultado);
-                filas  =[];
-                $.each(datos, function(){
-					var ruta = this.ruta.split('/');
-					var tipoDoc = ruta[3].split('.');
-					var nombre = tipoDoc[0];
-					var enlace = "";
-					var rutaDoc = base_url()+ruta[1]+'/'+ruta[2]+'/'+ruta[3];
-					var eliminar = "";
-					if (tipoDoc[1] == "doc") {
-						enlace ='<a href="'+rutaDoc+'" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-file-word-o"></i></a>';
-					}else if(tipoDoc[1] == "xls" || tipoDoc[1] == "xlsx"){
-						enlace ='<a href="'+rutaDoc+'" target="_blank" class="btn btn-success btn-xs"><i class="fas fa-file-excel"></i></a>';
-					}else if(tipoDoc[1] == "pdf"){
-						enlace ='<a href="'+rutaDoc+'" target="_blank" class="btn btn-danger btn-xs"><i class="fas fa-file-pdf"></i></a>';
-					}else if(tipoDoc[1] == "txt"){
-						enlace ='<a href="'+rutaDoc+'" target="_blank" class="btn btn-warning btn-xs"><i class="fas fa-file-alt"></i></a>';
-					}else{
-						enlace ='<a href="'+rutaDoc+'" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-image"></i></a>';
-					}
-                    eliminar = '<button class="btn eliminarAnexo btn-xs btn-danger" value="'+this.idanexo+'"><span class="fas fa-sm fa-times"></span></button>';
+                filas = [];
+                $.each(datos, function () {
+                    var ruta = this.ruta.split('/');
+                    var tipoDoc = ruta[3].split('.');
+                    var nombre = tipoDoc[0];
+                    var enlace = "";
+                    var rutaDoc = base_url() + ruta[1] + '/' + ruta[2] + '/' + ruta[3];
+                    var eliminar = "";
+                    if (tipoDoc[1] == "doc") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-file-word-o"></i></a>';
+                    } else if (tipoDoc[1] == "xls" || tipoDoc[1] == "xlsx") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-success btn-xs"><i class="fas fa-file-excel"></i></a>';
+                    } else if (tipoDoc[1] == "pdf") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-danger btn-xs"><i class="fas fa-file-pdf"></i></a>';
+                    } else if (tipoDoc[1] == "txt") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-warning btn-xs"><i class="fas fa-file-alt"></i></a>';
+                    } else {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-image"></i></a>';
+                    }
+                    eliminar = '<button class="btn eliminarAnexo btn-xs btn-danger" value="' + this.idanexo + '"><span class="fas fa-sm fa-times"></span></button>';
                     var fila = {
                         0: tipoDoc[1].toUpperCase(),
                         1: this.documento,
@@ -589,19 +715,17 @@ function obtenerAnexoActividad(id) {
 }
 
 function eliminarAnexo(id) {
-    nombre = '';
     $.ajax({
         async: false,
         type: "POST",
-        url: base_url()  + controlador + "/eliminarAnexo",
+        url: base_url() + controlador + "/eliminarAnexo",
         data: {
             'id': id
         },
         success: function (resultado) {
             if (resultado != 0) {
                 alertify.success("Anexo Eliminado con éxito");
-                obtenerAnexoActividad(idevidencia);
-            }else{
+            } else {
                 alertify.error("!Error, no se pudieron Eliminar los anexos; comuniquese con el administrador del sistema");
             }
         },
@@ -609,7 +733,6 @@ function eliminarAnexo(id) {
             alertify.alert('Error', error.responseText);
         }
     });
-    return nombre;
 }
 
 function obtenerAprobaciones(id) {
@@ -623,14 +746,14 @@ function obtenerAprobaciones(id) {
         success: function (resultado) {
             try {
                 var datos = JSON.parse(resultado);
-                filas  =[];
-                $.each(datos, function(){
+                filas = [];
+                $.each(datos, function () {
                     let aprobar = '';
                     eliminar = '<button class="btn eliminarParticipar btn-xs btn-danger"><span class="fas fa-sm fa-times"></span></button>';
-                    if(this.estado != 'activo'){
+                    if (this.estado != 'activo') {
                         aprobar = '<button class="btn aprobarParticipar btn-xs btn-success"><span class="fas fa-sm fa-check"></span></button>';
                     }
-                   
+
                     var fila = {
                         0: this.nombres + ' ' + this.apellidos,
                         1: this.estado,
@@ -654,12 +777,12 @@ function obtenerAprobaciones(id) {
 
 }
 
-function deleteData(id,actividad_idactividad) {
+function deleteData(id, actividad_idactividad) {
     nombrep = '';
     $.ajax({
         async: false,
         type: "POST",
-        url: base_url() + controlador + "/delete",
+        url: base_url() + controlador + "/deleteParticipante",
         data: {
             'id': id
         },
@@ -668,10 +791,10 @@ function deleteData(id,actividad_idactividad) {
 
             if (data.success == true) {
                 alertify.success("Participante retirado!");
-               obtenerAprobaciones(actividad_idactividad);
+                obtenerAprobaciones(actividad_idactividad);
             } else {
                 alertify.error('¡Error!, No se ha podido realizar la acción, comuniquese con el adminsitrador del sistema.');
-               obtenerAprobaciones(actividad_idactividad);
+                obtenerAprobaciones(actividad_idactividad);
                 return false;
             }
         },
@@ -683,7 +806,7 @@ function deleteData(id,actividad_idactividad) {
     return nombrep;
 }
 
-function saveStateAprobar(id,actividad_idactividad) {
+function saveStateAprobar(id, actividad_idactividad) {
     $.ajax({
         url: base_url() + controlador + "/EstadoAprobar",
         type: "POST",

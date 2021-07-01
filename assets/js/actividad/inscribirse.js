@@ -132,7 +132,7 @@ function consultarIndicador(id) {
 
 function sendData(id) {
     $.ajax({
-        url: base_url() + controlador + '/guardarIncripcion',
+        url: base_url() + controlador + '/guardarInscripcion',
         type: "POST",
         data: {
             'idparticipante'        : 0,

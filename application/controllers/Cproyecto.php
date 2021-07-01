@@ -254,23 +254,30 @@ class Cproyecto extends CI_Controller
 		$today = date('Y-m-d');
 		$project = new $this->Mproyecto();
 		$project->consultar($id);
+		
 		$indicatorsNumber = $this->Mindicador->CountParent($id);
 		$finishedIndicators = $this->Mindicador->CountParent('terminado', $id);
+
 		$state = 'pendiente';
-		if ($indicatorsNumber == $finishedIndicators) {
-			if ($today <= $project->get('fecha_fin')) {
-				$state = 'terminado';
-			} else {
-				$state = 'terminado con retraso';
+		$percentage = 0;
+
+		// Si no tiene hijos asignados pendiente porque nunca se inicio, y su cumplimiento sera 0
+		if ($indicatorsNumber > 0) {
+			if ($indicatorsNumber == $finishedIndicators) {
+				if ($today <= $project->get('fecha_fin')) {
+					$state = 'terminado';
+				} else {
+					$state = 'terminado con retraso';
+				}
+			} else if ($finishedIndicators < $indicatorsNumber) {
+				if ($today <= $project->get('fecha_fin')) {
+					$state = 'en proceso';
+				} else {
+					$state = 'vencido';
+				}
 			}
-		} else if ($finishedIndicators < $indicatorsNumber) {
-			if ($today <= $project->get('fecha_fin')) {
-				$state = 'en proceso';
-			} else {
-				$state = 'vencido';
-			}
-		}
-		$percentage = $finishedIndicators * 100 / $indicatorsNumber;
+			$percentage = $finishedIndicators * 100 / $indicatorsNumber;
+		}		
 		$project->set('estado', $state);
 		$project->set('cumplimiento', $percentage);
 		return $project->guardar();

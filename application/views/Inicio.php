@@ -7,7 +7,7 @@
 
                 <div class="card card-primary">
                     <div class="card-header">
-                        <!-- <h3 class="card-title"><?= $name ?></h3> -->
+                        <h3 class="card-title">Proyectos por Progama</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>

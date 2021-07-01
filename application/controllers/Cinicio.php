@@ -19,7 +19,7 @@ class Cinicio extends CI_Controller
         $data = array();
         // Nombre de la Página actual
 		$data['modulo'] = 'inicio';
-        $data['name'] = 'GRAFICO PROGRAMAS';
+        $data['name'] = 'INICIO';
         // Datos de la empresa
 		$data['empresa'] = 'PROJECT MANAGER';
 		$data['logo'] = 'assets/img/icono.jpg';

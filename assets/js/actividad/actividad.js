@@ -1,7 +1,7 @@
 table = 'actividad';
-idactividad  = '';
+idactividad = '';
 controlador = 'Cactividad';
-fields = ['nombre', 'descripcion', 'responsable', 'fecha','lugar','indicador_idindicador','estado'];
+fields = ['nombre', 'descripcion', 'responsable', 'fecha', 'lugar', 'indicador_idindicador', 'estado'];
 inactiveFields = [];
 action = true;
 title = 'Actualizar Actividad';
@@ -21,7 +21,7 @@ var DataTable = $('#dataTable').DataTable({
     autoWidth: false,
     // responsive: true,
     processing: true,
-    scrollX:true,
+    scrollX: true,
     pageLength: 10,
     columnDefs: [
         {
@@ -41,10 +41,10 @@ var DataTable = $('#dataTable').DataTable({
 
             var state = $(this).closest("tr").find("td:last .stateEdit").attr("value");
 
-            if (state == 'activo') {
-                state = 'inactivo';
-            } else {
+            if (state == 'inactivo') {
                 state = 'activo';
+            } else {
+                state = 'inactivo';
             }
 
             saveState(state, data[0]);
@@ -55,7 +55,7 @@ var DataTable = $('#dataTable').DataTable({
             editData(data[0]);
         });
 
-        
+
     }
 });
 
@@ -122,15 +122,13 @@ function dataLoad() {
             if (data.length > 0) {
                 var filas = [];
                 $.each(data, function () {
-
-                
                     var stateEdit = '';
 
                     if (fields.includes('estado')) {
-                        if (this.estado == 'activo') {
-                            stateEdit = '<button class="stateEdit btn btn-danger btn-xs" value="' + this.estado + '" title="Inactivar" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-times"></span></button>';
-                        } else {
+                        if (this.estado == 'inactivo') {
                             stateEdit = '<button class="stateEdit btn btn-success btn-xs" value="' + this.estado + '" title="Activar" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-check"></span></button>';
+                        } else {
+                            stateEdit = '<button class="stateEdit btn btn-danger btn-xs" value="' + this.estado + '" title="Inactivar" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-times"></span></button>';
                         }
                     }
 
@@ -144,16 +142,15 @@ function dataLoad() {
                             fila[i + 1] = consultarResponsable(this[fields[i]]);
                         } else if (fields[i] == 'indicador_idindicador') {
                             fila[i + 1] = consultarIndicador(this[fields[i]]) ? consultarIndicador(this[fields[i]]) : '';
-                        }else {
+                        } else {
                             fila[i + 1] = this[fields[i]];
                         }
                     }
 
                     if (action) {
-                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + edit  + '</center>';
+                        fila[fields.length + 1] = '<center>' + stateEdit + ' ' + edit + '</center>';
                     }
 
-            
                     filas.push(fila);
                     console.log()
                 });
@@ -179,7 +176,7 @@ function loadIndc() {
                 data = JSON.parse(resultado);
                 if (data.length > 0) {
                     $.each(data, function () {
-                     
+
                         $('[name=indicador_idindicador]').append($('<option />', {
                             text: this.nombre,
                             value: this.idindicador,
@@ -328,7 +325,7 @@ function consultar(id) {
                         $('[name="' + key + '"] [value="' + valor + '"]').attr('selected', true);
                     } else {
                         $('[name="' + key + '"]').val(valor);
-                    }                    
+                    }
                 }
 
                 for (i = 0; i < inactiveFields.length; i++) {
@@ -361,7 +358,7 @@ function consultarIndic(id) {
                         $('[name="' + key + '"] [value="' + valor + '"]').attr('selected', true);
                     } else {
                         $('[name="' + key + '"]').val(valor);
-                    }                    
+                    }
                 }
 
                 for (i = 0; i < inactiveFields.length; i++) {

@@ -104,8 +104,8 @@ class Clogin extends CI_Controller
 			$config = array(
 				'protocol' => 'smtp',
 				'smtp_host' => 'smtp.googlemail.com',
-				'smtp_user' => 'khriiiz.kano@gmail.com',
-				'smtp_pass' => 'allisonkano21',
+				'smtp_user' => 'jheivargasva@gmail.com',
+				'smtp_pass' => 'jheison96',
 				'smtp_port' => '465',
 				'smtp_crypto' => 'ssl',
 				'mailtype' => 'html',

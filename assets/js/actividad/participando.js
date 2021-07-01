@@ -44,8 +44,7 @@ var DataTable = $('#dataTable').DataTable({
 
         $(row).on("click", ".stateEliminar", function (e) {
             e.preventDefault();
-            var state = $(this).closest("tr").find("td:last .stateEliminar").attr("value");
-            deleteData(state);
+            deleteData(data[0]);
         });
     }
 });
@@ -66,7 +65,7 @@ function dataLoad() {
             var filas = [];
             if (data.length > 0) {
                 $.each(data, function () {
-                    var stateEliminar = '<button class="stateEliminar btn btn-danger btn-xs" value="' + this.idparticipante + '" title="Inactivar" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-times"></span></button>';
+                    var stateEliminar = '<button class="stateEliminar btn btn-danger btn-xs" title="Retirarse" style="margin-bottom:3px;margin: 0px 0px 0px 6px;"><span class="fas fa-sm fa-times"></span></button>';
                    
                     var fila = {};
                     fila[0] = this['id' + table];
@@ -164,32 +163,4 @@ function deleteData(id) {
         }
     });
     return nombrep;
-}
-
-function sendData(id) {
-    $.ajax({
-        url: base_url() + controlador + '/guardarIncripcion',
-        type: "POST",
-        data: {
-            'idparticipante'        : 0,
-            'actividad_idactividad' : id,
-            'estado'                : 1
-        },
-        success: function (resultado) {
-            var data = JSON.parse(resultado);
-
-            if (data.success == true) {
-                alertify.success("Guardado!");
-                dataLoad();
-            } else {
-                alertify.error('¡Error!, No se ha podido realizar la acción, comuniquese con el adminsitrador del sistema.');
-                dataLoad();
-                return false;
-            }
-        },
-        error: function (error) {
-            alertify.error('Ocurrio un Error');
-            return false;
-        }
-    });
 }
