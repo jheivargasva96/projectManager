@@ -39,21 +39,6 @@ class Mactividad extends Model
         }
     }
 
-	public function obtenerAnexoActividad()
-    {
-		$id  = $_POST['id'];
-        try {
-            $query = $this->db->select("idanexo,evidencia_idevidencia,documento,ruta")
-                ->from('anexo')
-                ->where('evidencia_idevidencia', $id)
-                ->order_by('documento', 'ASC')
-                ->get();
-            return $query->result();
-        } catch (\Throwable $th) {
-            return $th;
-        }
-    }
-
 	public function CountState($state, $parentId)
     {
         $this->db->select('count(*) as cant');

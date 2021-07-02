@@ -69,6 +69,38 @@ var DataTable = $('#dataTable').DataTable({
     }
 });
 
+function loadEvidences(idactividad) {
+    $.ajax({
+        url: base_url() + controlador + "/Evidencies",
+        type: "POST",
+        async: false,
+        data: {
+            idactividad: idactividad
+        },
+        success: function (resultado) {
+            try {
+                data = JSON.parse(resultado);
+                if (data.length > 0) {
+                    var evidencia = '';
+                    $.each(data, function () {
+                        evidencia += '<button class="btn btn-primary evidencias" idevidencia=' + this.idevidencia + ' type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">';
+                        evidencia += this.fecha;
+                        evidencia += '</button>';
+                        evidencia += '&nbsp;&nbsp;';
+                    });
+                    $('#listaEvidencias').append(evidencia);
+                }
+            } catch (e) {
+                alertify.error('¡Error! Los datos no han podido ser procesados(JSON.parse-Error)');
+                console.log(e);
+            }
+        },
+        error: function (error) {
+            alertify.alert('Error', error.responseText);
+        }
+    });
+}
+
 function verEvidencias(idactividad) {
     $("#Modal .modal-content").load(base_url() + controlador + '/ModalListaEvidencias', function () {
         $("#Modal").modal({
@@ -77,92 +109,116 @@ function verEvidencias(idactividad) {
             show: true
         });
 
-        // $("[name=fecha]").val(actualDate());
-        // $("#actividad_idactividad").val(idactividad);
-        // Anexos = [];
+        loadEvidences(idactividad);
 
-        // // Inicializar la tabla
-        // var dtTblAnexoActividad = $('#TblAnexoActividad').DataTable({
-        //     language: {
-        //         url: base_url() + 'assets/js/español.json'
-        //     },
-        //     processing: true,
-        //     pageLength: 5,
-        //     bLengthChange: false,
-        //     columnDefs: [
-        //         {
-        //             width: '1%',
-        //             targets: [0, 2, 3],
-        //             className: "text-center"
+        var TableAnexoEvidencia = $('#TableAnexoEvidencia').DataTable({
+            language: {
+                url: base_url() + 'assets/js/español.json'
+            },
+            processing: true,
+            pageLength: 5,
+            bLengthChange: false,
+            columnDefs: [
+                {
+                    width: '1%',
+                    targets: [0, 1, 2],
+                    className: "text-center"
 
-        //         },
-        //     ],
-        //     dom: '',
-        //     createdRow: function (row, data, dataIndex) {
-        //         $(row).on("click", ".eliminarAnexo", function (e) {
-        //             e.preventDefault();
-        //             var id = $(this).val();
-        //             eliminarAnexo(id);
-        //             Anexos.splice($(this).val(), 1);
-        //             getAnexosForList(dtTblAnexoActividad);
-        //         });
-        //     }
-        // });
+                },
+            ],
+            dom: '',
+            createdRow: function (row, data, dataIndex) {
+                $(row).on("click", ".eliminarAnexo", function (e) {
+                    e.preventDefault();
+                    var id = $(this).val();
+                    eliminarAnexo(id);
+                    Anexos.splice($(this).val(), 1);
+                    getAnexosForList(dtTblAnexoActividad);
+                });
+            }
+        });
 
-        // // Funciones nuevos anexos
-        // $("[id=CrearAnexoActividad]").on("click", function (e) {
-        //     e.preventDefault();
-        //     $(this).attr('disabled', true);
-        //     var row = {
-        //         0: '<input type="file"  name="Lista_Anexos[]" id="anexosDoc"  class="anexarArchivos" accept="application/msword, application/vnd.ms-excel, text/plain, application/pdf, image/*, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">',
-        //         1: '',
-        //         2: '',
-        //         3: "<center><button type='button' class='btnGuardarAN btn btn-primary btn-xs' title='Guardar' style='margin-right:5px'><span class='fas fa-save'></span></button><button type='button' class='btn btn-danger btn-xs LimpiarAN' title='Eliminar'><span class='fas fa-sm fa-times'></span></button></center>"
-        //     }
-        //     dtTblAnexoActividad.row.add(row).draw();
-        // });
+        $(".evidencias").on("click", function (e) {
+            e.preventDefault();
+            var idevidencia = $(this).attr('idevidencia');
+            loadDataEvidence(idevidencia);
+            getAnexosEvidencie(TableAnexoEvidencia, idevidencia);
+        });
+    });
+}
 
-        // $("[id=TblAnexoActividad]").on("click", ".LimpiarAN", function (e) {
-        //     e.preventDefault();
-        //     dtTblAnexoActividad.row($(this).closest('tr')).remove().draw();
-        //     $("#CrearAnexoActividad").attr('disabled', false);
-        // });
+function loadDataEvidence(id) {
+    $.ajax({
+        type: "POST",
+        url: base_url() + controlador + "/consultarDataEvidencie",
+        data: {
+            'id': id
+        },
+        success: function (resultado) {
+            try {
+                data = JSON.parse(resultado);
+                for (var key in data) {
+                    valor = data[key];
+                    $('[name="' + key + '"]').val(valor);
+                }
+            } catch (e) {
+                alertify.error('¡Error! Los datos no han podido ser procesados (JSON.parse-Error)');
+                console.log(e);
+            }
+        },
+        error: function (error) {
+            alertify.alert('Error', error.responseText);
+        }
+    });
 
-        // $("[id=TblAnexoActividad]").on("click", ".btnGuardarAN", function (e) {
-        //     e.preventDefault();
-        //     if (typeof FormData !== 'undefined') {
-        //         var form_data = new FormData();
-        //         form_data.append('Lista_Anexos', $("[id=anexosDoc]")[0].files[0]);
-        //         $.ajax({
-        //             url: base_url() + controlador + "/guardarAnexos",
-        //             type: "POST",
-        //             data: form_data,
-        //             async: false,
-        //             cache: false,
-        //             contentType: false,
-        //             processData: false,
-        //             success: function (resultado) {
-        //                 var data = JSON.parse(resultado);
-        //                 if (data.success) {
-        //                     alertify.success('Anexo guardado');
-        //                     Anexos.push(data.message);
-        //                     getAnexosForList(dtTblAnexoActividad);
-        //                 } else {
-        //                     alertify.error(data.message);
-        //                 }
-        //             },
-        //             error: function (error) {
-        //                 alertify.alert('Error', error.responseText);
-        //                 console.log(error);
-        //             }
-        //         });
-        //     }
-        // });
+}
 
-        // $("form").on('submit', function (e) {
-        //     e.preventDefault();
-        //     sendData();
-        // });
+function getAnexosEvidencie(TableAnexoEvidencia, idevidencia) {
+    $.ajax({
+        type: "POST",
+        url: base_url() + controlador + "/getAnexosEvidence",
+        data: {
+            idevidencia: idevidencia
+        },
+        success: function (resultado) {
+            try {
+                var datos = JSON.parse(resultado);
+                filas = [];
+                $.each(datos, function () {
+                    var ruta = this.ruta.split('/');
+                    var cant = ruta.length;
+                    var tipoDoc = ruta[cant - 1].split('.');
+                    var enlace = "";
+                    var rutaDoc = base_url() + 'uploads/anexoActividad/' + ruta[cant - 1];
+                    if (tipoDoc[1] == "doc") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-file-word-o"></i></a>';
+                    } else if (tipoDoc[1] == "xls" || tipoDoc[1] == "xlsx") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-success btn-xs"><i class="fas fa-file-excel"></i></a>';
+                    } else if (tipoDoc[1] == "pdf") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-danger btn-xs"><i class="fas fa-file-pdf"></i></a>';
+                    } else if (tipoDoc[1] == "txt") {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-warning btn-xs"><i class="fas fa-file-alt"></i></a>';
+                    } else {
+                        enlace = '<a href="' + rutaDoc + '" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-image"></i></a>';
+                    }
+
+                    var fila = {
+                        0: tipoDoc[1].toUpperCase(),
+                        1: this.documento,
+                        2: enlace,
+                    }
+                    filas.push(fila);
+                });
+                TableAnexoEvidencia.clear().draw();
+                TableAnexoEvidencia.rows.add(filas).draw();
+            } catch (e) {
+                alertify.error('¡Error! Los datos no han podido ser procesados (JSON.parse-Error)');
+                console.log(e);
+            }
+        },
+        error: function (error) {
+            alertify.alert('Error', error.responseText);
+        }
     });
 }
 
@@ -352,7 +408,6 @@ function sendData() {
     });
 }
 
-
 function dataLoad() {
     $.ajax({
         url: base_url() + controlador + "/consultarMisActividades",
@@ -474,7 +529,6 @@ function loadUsers() {
     });
 }
 
-
 function consultarResponsable(id) {
     nombre = '';
     $.ajax({
@@ -539,7 +593,6 @@ function saveState(state, id) {
         }
     });
 }
-
 
 function consultar(id) {
     $.ajax({

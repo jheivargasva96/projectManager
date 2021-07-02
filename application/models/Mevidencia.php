@@ -27,4 +27,11 @@ class Mevidencia extends Model
             return false;
         }
     }
+
+    public function Evidencies($parent)
+    {
+        $this->db->where('actividad_idactividad', $parent);
+        $query = $this->db->get($this->tabla);
+        return $query->result();
+    }
 }

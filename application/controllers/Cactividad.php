@@ -406,10 +406,11 @@ class Cactividad extends CI_Controller
 		return $route;
 	}
 
-	public function obtenerAnexoActividad()
+	public function getAnexosEvidence()
 	{
+		$this->load->model('Manexo');
 		if ($this->input->is_ajax_request()) {
-			echo json_encode($this->Mactividad->obtenerAnexoActividad());
+			echo json_encode($this->Manexo->getAnexosEvidence($_POST['idevidencia']));
 		}
 	}
 
@@ -566,5 +567,21 @@ class Cactividad extends CI_Controller
 	public function ModalListaEvidencias()
 	{
 		$this->load->view('actividad/ListaEvidencias');
+	}
+
+	public function Evidencies()
+	{
+		$id = $_POST['idactividad'];
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mevidencia->Evidencies($id));
+		}
+	}
+
+	public function consultarDataEvidencie()
+	{
+		$id  = $_POST['id'];
+		if ($this->input->is_ajax_request()) {
+			echo json_encode($this->Mevidencia->consultar($id));
+		}
 	}
 }

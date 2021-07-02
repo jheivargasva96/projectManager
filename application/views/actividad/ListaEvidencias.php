@@ -12,15 +12,36 @@
 </div>
 
 <div class="modal-body">
-    <div id="listaEvidencias">
-        <p>
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Button with data-target
-            </button>
-        </p>
-        <div class="collapse" id="collapseExample">
+    <div>
+        <p id="listaEvidencias"></p>
+        <div>
             <div class="card card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Fecha</label>
+                        <input type="text" class="form-control" value="" name="fecha" readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Estado *</label>
+                        <input type="text" class="form-control" value="" name="estado" readonly>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label>Observaciones *</label>
+                        <textarea type="text" name="observaciones" id="observaciones" class="form-control" placeholder="Observaciones..." required="" readonly></textarea>
+                    </div>
+                </div>
+
+                <table id="TableAnexoEvidencia" class="table table-bordered table-striped" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Anexo</th>
+                            <th>Nombre</th>
+                            <th>Documento</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>

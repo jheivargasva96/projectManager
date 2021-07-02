@@ -54,4 +54,11 @@ class Manexo extends Model
             return $th;
         }
     }
+
+    public function getAnexosEvidence($parent)
+    {
+        $this->db->where('evidencia_idevidencia', $parent);
+        $query = $this->db->get($this->tabla);
+        return $query->result();
+    }
 }
