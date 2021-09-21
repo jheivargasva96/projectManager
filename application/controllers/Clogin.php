@@ -19,7 +19,7 @@ class Clogin extends CI_Controller
 		// Nombre de la vista
 		$data['name'] = 'LOGIN';
 		// Datos de la empresa
-		$data['empresa'] = 'PROJECT MANAGER';
+		$data['empresa'] = 'Colegio Veracruz';
 		$data['logo'] = 'assets/img/icono.jpg';
 		// Estilos css de la vista
 		$data['css'] = array(

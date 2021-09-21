@@ -21,7 +21,7 @@ class Cinicio extends CI_Controller
 		$data['modulo'] = 'inicio';
         $data['name'] = 'GRAFICO PROGRAMAS';
         // Datos de la empresa
-		$data['empresa'] = 'PROJECT MANAGER';
+		$data['empresa'] = 'Colegio Veracruz';
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener al clase active

@@ -25,7 +25,7 @@ class Cproyecto extends CI_Controller
 		$data['modulo'] = 'modulo_proyecto';
         $data['name'] = 'Proyectos';
         // data de la empresa
-		$data['empresa'] = 'PROJECT MANAGER';
+		$data['empresa'] = 'Colegio Veracruz';
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active

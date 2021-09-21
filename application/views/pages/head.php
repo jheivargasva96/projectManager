@@ -1,11 +1,3 @@
-<?php
-$cadena = '';
-if (@$css) {
-    foreach ($css as $value) {
-        $cadena .= '<link rel="stylesheet" href="' . base_url() . '/assets/' . $value . '">';
-    }
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +18,4 @@ if (@$css) {
     <!-- Icono del sistema -->
     <link rel="icon" href="<?= base_url() ?>/<?= $logo ?>">
 
-    <!-- Estilos Adicionales -->
-    <?= $cadena ?>
-</head>
+

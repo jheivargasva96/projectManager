@@ -1,5 +1,5 @@
 alertify.set('notifier', 'position', 'top-right');
-
+return;
 $(document).ready(function () {
     $(".modulos").hide();
     datos = modulosPrincipales();

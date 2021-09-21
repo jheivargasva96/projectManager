@@ -22,11 +22,15 @@ class Cactividad extends CI_Controller
 		}
 
 		$data = array();
+
+		$data['content_page'] = 'actividad/actividad';
+		// $contenido['titulo'] = "Listado Vencimientos Tiempo";
+
         // Nombre de la Página actual
 		$data['modulo'] = 'modulo_lista_actividades';
         $data['name'] = 'Actividades';
         // data de la empresa
-		$data['empresa'] = 'PROJECT MANAGER';
+		$data['empresa'] = 'Colegio Veracruz';
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
@@ -59,14 +63,7 @@ class Cactividad extends CI_Controller
 			'datatables-buttons/js/buttons.colVis.min.js',
 			'js/actividad/actividad.js'
         );
-
-		$this->load->view('pages/head', $data);
-		$this->load->view('pages/header');
-		$this->load->view('pages/menu');
-		$this->load->view('pages/wrapper');
-		$this->load->view('actividad/actividad');
-		$this->load->view('pages/footer');
-		$this->load->view('pages/script');
+		$this->load->view('pages/gestion_view', $data);
     }
 
 	public function filtro_responsable()
@@ -76,6 +73,7 @@ class Cactividad extends CI_Controller
 		}
 
 		$data = array();
+		$data['content_page'] = 'actividad/Misactividades';
         // Nombre de la Página actual
 		$data['modulo'] = 'modulo_mis_actividades';
         $data['name'] = 'Mis Actividades';
@@ -114,13 +112,7 @@ class Cactividad extends CI_Controller
 			'js/actividad/Misactividades.js'
         );
 
-		$this->load->view('pages/head', $data);
-		$this->load->view('pages/header');
-		$this->load->view('pages/menu');
-		$this->load->view('pages/wrapper');
-		$this->load->view('actividad/Misactividades');
-		$this->load->view('pages/footer');
-		$this->load->view('pages/script');
+		$this->load->view('pages/gestion_view', $data);
     }
 
 	public function inscribirse()
@@ -130,6 +122,7 @@ class Cactividad extends CI_Controller
 		}
 
 		$data = array();
+		$data['content_page'] = 'actividad/Inscribirse';
         // Nombre de la Página actual
 		$data['modulo'] = 'modulo_inscribir_actividades';
         $data['name'] = 'Inscribirse';
@@ -168,13 +161,7 @@ class Cactividad extends CI_Controller
 			'js/actividad/inscribirse.js'
         );
 
-		$this->load->view('pages/head', $data);
-		$this->load->view('pages/header');
-		$this->load->view('pages/menu');
-		$this->load->view('pages/wrapper');
-		$this->load->view('actividad/Inscribirse');
-		$this->load->view('pages/footer');
-		$this->load->view('pages/script');
+		$this->load->view('pages/gestion_view', $data);
     }
 
 	public function participando()
@@ -185,6 +172,7 @@ class Cactividad extends CI_Controller
 
 		$data = array();
         // Nombre de la Página actual
+		$data['content_page'] = 'actividad/participando';
 		$data['modulo'] = 'modulo_actividades_participando';
         $data['name'] = 'Participando';
         // data de la empresa
@@ -221,14 +209,7 @@ class Cactividad extends CI_Controller
 			'datatables-buttons/js/buttons.colVis.min.js',
 			'js/actividad/participando.js'
         );
-
-		$this->load->view('pages/head', $data);
-		$this->load->view('pages/header');
-		$this->load->view('pages/menu');
-		$this->load->view('pages/wrapper');
-		$this->load->view('actividad/participando');
-		$this->load->view('pages/footer');
-		$this->load->view('pages/script');
+		$this->load->view('pages/gestion_view', $data);
     }
 
     public function consultarTodos()

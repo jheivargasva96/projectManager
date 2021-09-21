@@ -19,11 +19,12 @@ class Cprograma extends CI_Controller
 		}
 
 		$data = array();
+		$data['content_page'] = 'programa/programa';
         // Nombre de la Página actual
 		$data['modulo'] = 'modulo_lista_programas';
         $data['name'] = 'PROGRAMAS';
         // data de la empresa
-		$data['empresa'] = 'PROJECT MANAGER';
+		$data['empresa'] = 'Colegio Veracruz';
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
@@ -127,7 +128,7 @@ class Cprograma extends CI_Controller
 		$data['modulo'] = 'modulo_mis_programas';
         $data['name'] = 'MIS PROGRAMAS';
         // data de la empresa
-		$data['empresa'] = 'PROJECT MANAGER';
+		$data['empresa'] = 'Colegio Veracruz';
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active

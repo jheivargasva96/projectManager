@@ -25,7 +25,7 @@ class Cindicador extends CI_Controller
 		$data['modulo'] = 'modulo_mis_indicadores';
         $data['name'] = 'Indicadores';
         // data de la empresa
-		$data['empresa'] = 'PROJECT MANAGER';
+		$data['empresa'] = 'Colegio Veracruz';
 		$data['logo'] = 'assets/img/icono.jpg';
 
         // Ruta de navegación actual - En caso de una ruta más larga se colocan mas objetos li, en el que estemos debe tener la clase active
